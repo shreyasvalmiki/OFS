@@ -1,5 +1,7 @@
 package datastructures;
 
-public class Inode {
+import java.util.*;
 
+public class Inode {
+	
 }
