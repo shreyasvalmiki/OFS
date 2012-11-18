@@ -26,8 +26,8 @@ public class SuperBlock {
 	private int fragsPerGroup;
 	//4 bytes
 	private int inodesPerGroup;
-	//4 bytes
-	private int wTime;
+	//8 bytes
+	private long wTime;
 	//4 bytes
 	private int firstInode;
 	//4 bytes
@@ -125,14 +125,14 @@ public class SuperBlock {
 	}
 	
 	//wTime Property
-	public int getWTime(){
+	public long getWTime(){
 		return this.wTime;
 	}
 	public void setWTime(Date val){
 		SimpleDateFormat format = new SimpleDateFormat("yyMMddhhmmss");
 		String date = new String();
 		date = format.format(val);
-		this.wTime = Integer.parseInt(date);
+		this.wTime = Long.parseLong(date);
 	}
 	
 	//firstInode Property
