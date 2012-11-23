@@ -49,4 +49,15 @@ public class Bitmap {
 		
 		return (mask & word) == 1;
 	}
+	
+	//Prints the bitmap
+	public void print(){
+		for(int i = 0; i<words; i+=3)
+		{
+			System.out.println(Integer.toBinaryString(map[i]));
+			System.out.print(Integer.toBinaryString(map[i+1]));
+			System.out.print(Integer.toBinaryString(map[i+2]));
+		}
+		
+	}
 }

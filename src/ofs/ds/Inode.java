@@ -107,4 +107,22 @@ public class Inode {
 	public void setBlock(int index,int val){
 		this.block[index] = val;
 	}
+	
+	
+	//Prints an Inode
+	public void print(){
+		System.out.println("Mode:\t\t" + mode);
+		System.out.println("Size:\t\t" + size);
+		System.out.println("Accessed Time:\t\t" + accessedTime);
+		System.out.println("Created Time:\t\t" + createdTime);
+		System.out.println("Modified Time:\t\t" + modifiedTime);
+		System.out.println("Deleted Time:\t\t" + deletedTime);
+		System.out.println("Links Count:\t\t" + linksCount);
+		System.out.println("Blocks Count:\t\t" + blocksCount);
+		System.out.println("Implementation Flag:\t\t" + implFlag);
+		System.out.println("Blocks:");
+		for(int i=0; i<15; i++){
+			System.out.println("\t\tBlock " + i + ": " + block);
+		}
+	}
 }

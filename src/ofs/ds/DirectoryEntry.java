@@ -56,4 +56,12 @@ public class DirectoryEntry {
 	public void setName(String val){
 		this.name = val;
 	}
+	
+	//Prints the directory entry
+	public void print(){
+		System.out.println("Inode:\t\t" + inode);
+		System.out.println("Record Length:\t\t" + recordLength);
+		System.out.println("File Type:\t\t" + fileType);
+		System.out.println("Name:\t\t" + name);
+	}
 }

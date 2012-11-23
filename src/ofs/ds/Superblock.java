@@ -5,6 +5,8 @@ import java.util.Date;
 
 public class Superblock {
 	//4 bytes
+	private int blockSize;
+	//4 bytes
 	private int inodeCount;
 	//4 bytes
 	private int blocksCount;
@@ -35,6 +37,13 @@ public class Superblock {
 	//4 bytes
 	private int blockGroupNum;
 	
+	//blockSize Property
+	public int getBlockSize(){
+		return this.blockSize;
+	}
+	public void setBlockSize(int val){
+		this.blockSize = val;
+	}
 	
 	//inodeCount Property
 	public int getInodeCount(){
@@ -161,6 +170,7 @@ public class Superblock {
 	
 	//Prints all the superblock values
 	public void print(){
+		System.out.println("Size of each block:\t\t" + this.blockSize);
 		System.out.println("Total Number of Inodes:\t\t" + this.inodeCount);
 		System.out.println("Total Number of Blocks:\t\t" + this.blocksCount);
 		System.out.println("Number of Free Blocks:\t\t" + this.freeBlocksCount);
@@ -173,5 +183,4 @@ public class Superblock {
 		System.out.println("Inode Size:\t\t" + this.inodeSize);
 		System.out.println("Block Group of Superblock:\t\t" + this.blockGroupNum);
 	}
-	
 }
