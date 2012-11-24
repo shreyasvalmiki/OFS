@@ -14,7 +14,11 @@ public class Bitmap {
 		}
 		map = new int[words];
 	}
-
+	
+	//gets the number of words
+	public int getWords(){
+		return words;
+	}
 	//sets a bit map position
 	public void setAtPos(int position){
 		int wordIndex;
@@ -49,7 +53,9 @@ public class Bitmap {
 		
 		return (mask & word) == 1;
 	}
-	
+	public int[] getMap(){
+		return map;
+	}
 	//Prints the bitmap
 	public void print(){
 		for(int i = 0; i<words; i+=3)
@@ -58,6 +64,5 @@ public class Bitmap {
 			System.out.print(Integer.toBinaryString(map[i+1]));
 			System.out.print(Integer.toBinaryString(map[i+2]));
 		}
-		
 	}
 }
