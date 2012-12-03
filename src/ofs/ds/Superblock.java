@@ -1,7 +1,6 @@
 package ofs.ds;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import ofs.utils.GeneralUtils;
 
 public class Superblock {
 	//4 bytes
@@ -137,11 +136,8 @@ public class Superblock {
 	public long getWTime(){
 		return this.wTime;
 	}
-	public void setWTime(Date val){
-		SimpleDateFormat format = new SimpleDateFormat("yyMMddhhmmss");
-		String date = new String();
-		date = format.format(val);
-		this.wTime = Long.parseLong(date);
+	public void setWTime(long val){
+		this.wTime = val;
 	}
 	
 	//firstInode Property
@@ -176,11 +172,11 @@ public class Superblock {
 		System.out.println("Number of Free Blocks:\t\t" + this.freeBlocksCount);
 		System.out.println("Number of Free Inodes:\t\t" + this.freeInodesCount);
 		System.out.println("First Data Block:\t\t" + this.firstDataBlock);
-		System.out.println("Number of Blocks Per Group:\t\t" + this.blocksPerGroup);
-		System.out.println("Number of Inodes Per Group:\t\t" + this.inodesPerGroup);
-		System.out.println("Last Written Date and Time:\t\t" + this.wTime);
-		System.out.println("First Inode:\t\t" + this.firstInode);
-		System.out.println("Inode Size:\t\t" + this.inodeSize);
-		System.out.println("Block Group of Superblock:\t\t" + this.blockGroupNum);
+		//System.out.println("Number of Blocks Per Group:\t\t" + this.blocksPerGroup);
+		//System.out.println("Number of Inodes Per Group:\t\t" + this.inodesPerGroup);
+		System.out.println("Last Written Date and Time:\t" + GeneralUtils.getDateFromLong(this.wTime));
+		System.out.println("First Inode:\t\t\t" + this.firstInode);
+		System.out.println("Inode Size:\t\t\t" + this.inodeSize);
+		//System.out.println("Block Group of Superblock:\t\t" + this.blockGroupNum);
 	}
 }

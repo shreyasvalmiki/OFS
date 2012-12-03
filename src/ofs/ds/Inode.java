@@ -5,14 +5,14 @@ public class Inode {
 	private int mode;
 	//4 bytes
 	private int size;
-	//4 bytes
-	private int accessedTime;
-	//4 bytes
-	private int createdTime;
-	//4 bytes
-	private int modifiedTime;
-	//4 bytes
-	private int deletedTime;
+	//8 bytes
+	private long accessedTime;
+	//8 bytes
+	private long createdTime;
+	//8 bytes
+	private long modifiedTime;
+	//8 bytes
+	private long deletedTime;
 	//1 byte
 	private byte linksCount;
 	//4 bytes
@@ -44,34 +44,34 @@ public class Inode {
 	}
 	
 	//accessedTime Property
-	public int getAccessedTime(){
+	public long getAccessedTime(){
 		return this.accessedTime;
 	}
-	public void setAccessedTime(int val){
+	public void setAccessedTime(long val){
 		this.accessedTime = val;
 	}
 	
 	//createdTime Property
-	public int getCreatedTime(){
+	public long getCreatedTime(){
 		return this.createdTime;
 	}
-	public void setCreatedTime(int val){
+	public void setCreatedTime(long val){
 		this.createdTime = val;
 	}
 	
 	//modifiedTime Property
-	public int getModifiedTime(){
+	public long getModifiedTime(){
 		return this.modifiedTime;
 	}
-	public void setModifiedTime(int val){
+	public void setModifiedTime(long val){
 		this.modifiedTime = val;
 	}
 	
 	//deletedTime Property
-	public int getDeletedTime(){
+	public long getDeletedTime(){
 		return this.deletedTime;
 	}
-	public void setDeletedTime(int val){
+	public void setDeletedTime(long val){
 		this.deletedTime = val;
 	}
 	
@@ -100,7 +100,7 @@ public class Inode {
 	}
 	
 	//gets a block from block array
-	public int addBlock(int index){
+	public int getBlock(int index){
 		return this.block[index];
 	}
 	//sets a block to the block array at the index
