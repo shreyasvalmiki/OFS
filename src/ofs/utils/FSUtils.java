@@ -13,6 +13,7 @@ public class FSUtils {
 			raFile.writeInt(sBlock.getInodeCount());
 			raFile.writeLong(sBlock.getWTime());
 			raFile.writeInt(sBlock.getInodeSize());
+			raFile.writeInt(sBlock.getFreeBlocksCount());
 			raFile.writeInt(sBlock.getFreeInodesCount());
 			raFile.writeInt(sBlock.getBlocksCount());
 			raFile.writeInt(sBlock.getFirstDataBlock());
@@ -102,6 +103,7 @@ public class FSUtils {
 			sBlock.setInodeCount(raFile.readInt());
 			sBlock.setWTime(raFile.readLong());
 			sBlock.setInodeSize(raFile.readInt());
+			sBlock.setFreeBlocksCount(raFile.readInt());
 			sBlock.setFreeInodesCount(raFile.readInt());
 			sBlock.setBlocksCount(raFile.readInt());
 			sBlock.setFirstDataBlock(raFile.readInt());

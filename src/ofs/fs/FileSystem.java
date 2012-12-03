@@ -70,16 +70,7 @@ public class FileSystem {
 		fileName = fsName;
 		fileSize = fSize;
 		blockSize = blkSize;
-		
-		float numInodeBlocks = (inodeCount * Constants.INODE_SIZE)/blockSize;
-		firstDataBlock = (int)Math.floor(3 + numInodeBlocks);
-		if(numInodeBlocks != Math.floor(numInodeBlocks)){
-			++firstDataBlock;
-		}
-		blockCount = (int)fileSize/blockSize - firstDataBlock;
-		int tempInodeCount = (int)((blockCount)/7.8);
-		inodeCount = tempInodeCount <= blockSize*Constants.BYTE_SIZE? tempInodeCount: blockSize*Constants.BYTE_SIZE;
-		
+		setNumbers();
 		File file = new File("src"+sep+"Assets"+sep+fileName);
 		try {
 			raFile = new RandomAccessFile(file, "rw");
@@ -87,12 +78,47 @@ public class FileSystem {
 			setFileSystemObjects();
 			updateFileSystem();
 			displaySuperBlock();
+			blockBitmap.print();
+			System.out.println();
+			inodeBitmap.print();
 			raFile.close();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 	}
+	
+	private void setNumbers(){
+		int totalBlockCount = (int)(fileSize/blockSize) - 3;
+		int tempInodeCount = totalBlockCount;
+		int numInodeBlocks = (int) Math.ceil((tempInodeCount * Constants.INODE_SIZE)/blockSize);
+		int tempBlockCount;
+		//totalBlockCount -= numInodeBlocks;
+		boolean done = false;
+		do{
+			numInodeBlocks = (int) Math.ceil((tempInodeCount * Constants.INODE_SIZE)/blockSize);
+			tempBlockCount = totalBlockCount - numInodeBlocks;
+			if(tempBlockCount > tempInodeCount && tempInodeCount <= blockSize*Constants.BYTE_SIZE)
+			{
+				done = true;
+			}else if(tempInodeCount > tempBlockCount)
+			{
+				tempInodeCount = tempBlockCount - numInodeBlocks;
+			}else if(tempBlockCount > tempInodeCount && tempInodeCount > blockSize*Constants.BYTE_SIZE){
+				tempInodeCount = blockSize*Constants.BYTE_SIZE;
+				numInodeBlocks = (int) Math.ceil((tempInodeCount * Constants.INODE_SIZE)/blockSize);
+				done = true;
+			}
+			
+		}while(!done);
+		
+		
+		firstDataBlock = 3 + numInodeBlocks;
+		blockCount = tempBlockCount;
+		inodeCount = tempInodeCount;
+	}
+	
+	
 	public RandomAccessFile get(String fsName){
 		fileName = fsName;
 		File file = new File("src"+sep+"Assets"+sep+fileName);
@@ -136,10 +162,12 @@ public class FileSystem {
 	public void updateFileSystem(){
 		try{
 			FSUtils.updateSuperblock(raFile, sBlock);
-			FSUtils.updateBitmap(raFile,blockBitmap, blockSize);
-			FSUtils.updateBitmap(raFile,inodeBitmap, blockSize * 2);
 			FSUtils.updateInode(raFile, initInode, blockSize * 3);
 			FSUtils.updateInitDirEntry(raFile, blockSize, blockSize*3, 0, true, firstDataBlock*blockSize);
+			blockBitmap.setAtPos(1);
+			inodeBitmap.setAtPos(1);
+			FSUtils.updateBitmap(raFile,blockBitmap, blockSize);
+			FSUtils.updateBitmap(raFile,inodeBitmap, blockSize * 2);
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -154,10 +182,11 @@ public class FileSystem {
 		sBlock.setInodeCount(inodeCount);
 		sBlock.setWTime(GeneralUtils.getLongFromDate(now));
 		sBlock.setInodeSize(Constants.INODE_SIZE);
-		sBlock.setFreeInodesCount(1);
+		sBlock.setFreeBlocksCount(blockCount - 1);
+		sBlock.setFreeInodesCount(inodeCount - 1);
 		sBlock.setBlocksCount(blockCount);
 		sBlock.setFirstDataBlock(firstDataBlock);
-		sBlock.setFirstInode(0);
+		sBlock.setFirstInode(blockSize*3);
 	}
 	private void setInitRootInode(){
 		Date now = new Date();
