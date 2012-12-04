@@ -2,6 +2,8 @@ package ofs.ds;
 
 public class Constants {
 	//public static final int SUPERBLOCK_SIZE = 68;
+	public static final int BLOCK_BITMAP_BLK_POS = 2;
+	public static final int INODE_BITMAP_BLK_POS = 3;
 	public static final int BYTE_SIZE = 8;
 	public static final int SECTOR_SIZE = 512;
 	public static final int SUPERBLOCK_SIZE = 40;

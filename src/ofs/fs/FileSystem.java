@@ -112,6 +112,9 @@ public class FileSystem {
 			
 		}while(!done);
 		
+		if(tempBlockCount > blockSize*Constants.BYTE_SIZE){
+			tempBlockCount = blockSize*Constants.BYTE_SIZE;
+		}
 		
 		firstDataBlock = 3 + numInodeBlocks;
 		blockCount = tempBlockCount;
@@ -136,23 +139,8 @@ public class FileSystem {
 		File file = new File("src"+sep+"Assets"+sep+fileName);
 		return file.exists();
 	}
-	public void delete(String fileName){
-		
-	}
+
 	public void setFileSystemObjects(){
-//		try {
-//			raFile.seek(blockSize);
-//			
-//			raFile.writeInt(678889);
-//			raFile.writeInt(38838);
-//			raFile.seek(blockSize);
-//			System.out.println(raFile.readInt());
-//			System.out.println(raFile.readInt());
-//			raFile.close();
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 		setInitSuperblock();
 		blockBitmap = new Bitmap(blockCount);
 		inodeBitmap = new Bitmap(inodeCount);
@@ -201,7 +189,7 @@ public class FileSystem {
 		initInode.setBlocksCount(1);
 		initInode.setBlock(0, firstDataBlock);
 		for(int i = 1; i < Constants.BLOCKS_PER_INODE - 1; ++i){
-			initInode.setBlock(i, -1);
+			initInode.setBlock(i, 0);
 		}
 	}
 	

@@ -114,4 +114,47 @@ public class FSUtils {
 		}
 		return sBlock;
 	}
+	
+	public static Inode getInode(RandomAccessFile raFile, long pos){
+		Inode inode = new Inode();
+		try{
+			raFile.seek(pos);
+			inode.setMode(raFile.readInt());
+			inode.setSize(raFile.readInt());
+			inode.setAccessedTime(raFile.readLong());
+			inode.setCreatedTime(raFile.readLong());
+			inode.setModifiedTime(raFile.readLong());
+			inode.setDeletedTime(raFile.readLong());
+			inode.setLinksCount(raFile.readByte());
+			inode.setBlocksCount(raFile.readInt());
+			for(int i=0;i<15;i++){
+				inode.setBlock(i, raFile.readInt());
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return inode;
+	}
+	
+	public static Bitmap getBitmap(RandomAccessFile raFile,int size, boolean isBlockBitmap){
+		Bitmap bitmap = new Bitmap(size);
+		try{
+			if(isBlockBitmap){
+				raFile.seek(Constants.BLOCK_BITMAP_BLK_POS);
+			}
+			else{
+				raFile.seek(Constants.INODE_BITMAP_BLK_POS);
+			}
+			for(int i = 0; i<bitmap.getWords();++i){
+				bitmap.setMapAtPos(i, raFile.readInt());
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return bitmap;
+	}
+	
 }

@@ -5,9 +5,11 @@ package ofs.ds;
  **/
 public class Bitmap {
 	private int words;
+	private int size;
 	private int[] map;
 	//Constructor
 	public Bitmap(int size){
+		this.size = size;
 		words = size/Constants.WORD_SIZE;
 		if(size % Constants.WORD_SIZE != 0){
 			words++;
@@ -53,16 +55,29 @@ public class Bitmap {
 		
 		return (mask & word) == 1;
 	}
+	
+	public void setMapAtPos(int wordIndex, int val){
+		map[wordIndex] = val;
+	}
 	public int[] getMap(){
 		return map;
 	}
 	//Prints the bitmap
 	public void print(){
-		for(int i = 0; i<words; i+=3)
+		for(int i = 0; i<words; ++i)
 		{
-			System.out.println(Integer.toBinaryString(map[i]));
-			System.out.print(Integer.toBinaryString(map[i+1]));
-			System.out.print(Integer.toBinaryString(map[i+2]));
+			System.out.print(Integer.toBinaryString(map[i]));
+			
 		}
+	}
+	
+	public int getFirstFreeBit(){
+		for(int i = 0;i < size;++i){
+			if(!isSetAtPos(i))
+			{
+				return i;
+			}
+		}
+		return -1;
 	}
 }
