@@ -156,5 +156,25 @@ public class FSUtils {
 		}
 		return bitmap;
 	}
-	
+	public static DirectoryEntry getDirEntry(RandomAccessFile raFile, long pos){
+		DirectoryEntry dirEntry = new DirectoryEntry();
+		String name = new String();
+		try{
+			raFile.seek(pos);
+			
+			dirEntry.setInode(raFile.readInt());
+			dirEntry.setRecordLength(raFile.readInt());
+			dirEntry.setNameLength(raFile.readByte());
+			dirEntry.setFileType(raFile.readByte());
+			
+			for(int i = 0; i<dirEntry.getNameLength(); i++){
+				name += raFile.readChar();
+			}
+			dirEntry.setName(name);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return dirEntry;
+	}
 }
