@@ -56,6 +56,7 @@ public class Bitmap {
 		return (mask & word) == 1;
 	}
 	
+	//
 	public void setMapAtPos(int wordIndex, int val){
 		map[wordIndex] = val;
 	}
@@ -79,5 +80,35 @@ public class Bitmap {
 			}
 		}
 		return -1;
+	}
+	
+	public int setFirstEmptyBit(){
+		for(int i = 0;i < size;++i){
+			if(!isSetAtPos(i))
+			{
+				setAtPos(i);
+				return i;
+			}
+		}
+		return -1;
+	}
+	
+	public boolean isFree(int numOfBits){
+		int i = 0;
+		
+		while(i < size){
+			if(isSetAtPos(i)){
+				--numOfBits;
+			}
+			else
+			{
+				return false;
+			}
+			if(numOfBits == 0){
+				return true;
+			}
+			++i;
+		}
+		return false;
 	}
 }

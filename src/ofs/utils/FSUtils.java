@@ -2,8 +2,9 @@ package ofs.utils;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
+
 import ofs.ds.*;
-import ofs.ds.Bitmap;
 
 public class FSUtils {
 	public static void updateSuperblock(RandomAccessFile raFile,Superblock sBlock){
@@ -59,8 +60,10 @@ public class FSUtils {
 		}
 	}
 
-	public static void updateInitDirEntry(RandomAccessFile raFile,int blockSize,int curInodeIdx, int parInodeIdx,boolean isRoot, long pos){
-		try{			
+	public static void updateInitDirEntry(RandomAccessFile raFile,int curInodeIdx, int parInodeIdx,boolean isRoot, long pos){
+		try{
+			Superblock sBlock = new Superblock();
+			sBlock = getSuperblock(raFile);
 			raFile.seek(pos);
 
 			raFile.writeInt(curInodeIdx);
@@ -68,7 +71,6 @@ public class FSUtils {
 			raFile.writeByte(1);
 			raFile.writeByte(Constants.FT_DIR);
 			raFile.writeChars(".");
-
 			pos += Constants.INIT_DIR_ENTRY_SIZE;
 			if(!isRoot){
 				raFile.seek(pos);
@@ -85,7 +87,7 @@ public class FSUtils {
 			raFile.seek(pos);
 
 			raFile.writeInt(0);
-			raFile.writeInt(blockSize-(Constants.INIT_DIR_ENTRY_SIZE*2));
+			raFile.writeInt(sBlock.getBlockSize()-(Constants.INIT_DIR_ENTRY_SIZE*2));
 			raFile.writeByte(0);
 			raFile.writeByte(Constants.FT_DIR);
 			raFile.writeChars("");
@@ -95,7 +97,7 @@ public class FSUtils {
 		}
 	}
 
-	public static Superblock getSuperBlock(RandomAccessFile raFile){
+	public static Superblock getSuperblock(RandomAccessFile raFile){
 		Superblock sBlock = new Superblock();
 		try {
 			raFile.seek(1);
@@ -176,5 +178,65 @@ public class FSUtils {
 			e.printStackTrace();
 		}
 		return dirEntry;
+	}
+	
+	public static long getLastDirEntry(RandomAccessFile raFile,long pos){
+		DirectoryEntry entry = new DirectoryEntry();
+		DirectoryEntry nextEntry = new DirectoryEntry();
+		while(true){
+			entry = getDirEntry(raFile,pos);
+			nextEntry = getDirEntry(raFile,pos+entry.getRecordLength());
+			if(nextEntry.getInode() == 0){
+				return pos;
+			}
+			pos += entry.getRecordLength();
+		}
+	}
+	
+	public static boolean isFileNameExists(RandomAccessFile raFile, String fileName, long pos){
+		DirectoryEntry entry = new DirectoryEntry();
+		int inode = -1;
+		while(inode!=0){
+			entry = getDirEntry(raFile,pos);
+			if(entry.getName().equals(fileName)){
+				return true;
+			}
+			pos += entry.getRecordLength();
+		}
+		return false;
+	}
+	
+	public static void updateDirEntry(RandomAccessFile raFile,DirectoryEntry dirEntry, long pos){
+		try{
+			raFile.seek(pos);
+			raFile.writeInt(dirEntry.getInode());
+			raFile.writeInt(dirEntry.getRecordLength());
+			raFile.writeByte(dirEntry.getNameLength());
+			raFile.writeInt(dirEntry.getFileType());
+			raFile.writeChars(dirEntry.getName());
+			
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static ArrayList<DirectoryEntry> getDirEntryList(RandomAccessFile raFile, long pos){
+		ArrayList<DirectoryEntry> entryList = new ArrayList<DirectoryEntry>();
+		DirectoryEntry entry = new DirectoryEntry();
+		int inode = -1;
+		while(inode!=0){
+			entry = getDirEntry(raFile,pos);
+			entryList.add(entry);
+			pos += entry.getRecordLength();
+		}
+		return entryList;
+	}
+	
+	public static Inode getRootInode(RandomAccessFile raFile){
+		Superblock sBlock = getSuperblock(raFile);
+		Inode inode = getInode(raFile, sBlock.getFirstInode());
+		return inode;
 	}
 }

@@ -17,6 +17,8 @@ public class Constants {
 	public static final int SIZE_OF_LONG = 8;
 	public static final int SIZE_OF_BYTE = 1;
 	
+	//Inode
+	public static final int DIRECT_LINKS_CNT = 15; 
 	
 	//Inode mode constants
 	public static final int DIR = 1;
@@ -28,8 +30,16 @@ public class Constants {
 	
 	//Directory entry constants
 	public static final int INIT_DIR_ENTRY_SIZE = 12;
-	
+	public static final int DIR_ENTRY_SIZE_SANS_NAME = 10;
 	public static final int FT_UNKNOWN = 0;
 	public static final int FT_REG_FILE = 1;
 	public static final int FT_DIR = 2;
+	
+	
+	//Errors
+	public static final int NO_ERROR = 0;
+	public static final int ERR_INSUFF_MEM = 1;
+	public static final int ERR_FILE_TOO_LARGE = 2;
+	public static final int ERR_FILE_NAME_EXISTS = 3;
+	public static final int ERR_INVALID_PATH = 4;
 }
