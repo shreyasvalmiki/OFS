@@ -73,7 +73,7 @@ public class Bitmap {
 	}
 	
 	public int getFirstFreeBit(){
-		for(int i = 0;i < size;++i){
+		for(int i = 2;i < size;++i){
 			if(!isSetAtPos(i))
 			{
 				return i;
@@ -83,7 +83,7 @@ public class Bitmap {
 	}
 	
 	public int setFirstEmptyBit(){
-		for(int i = 0;i < size;++i){
+		for(int i = 2;i < size;++i){
 			if(!isSetAtPos(i))
 			{
 				setAtPos(i);

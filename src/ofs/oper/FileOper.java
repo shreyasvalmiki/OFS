@@ -41,9 +41,12 @@ public class FileOper {
 		blockBitmap = FSUtils.getBitmap(raFile, sBlock.getBlocksCount(), true);
 		inodeBitmap = FSUtils.getBitmap(raFile, sBlock.getInodeCount(), false);
 		
+		blockBitmap.print();
+		System.out.println();
+		inodeBitmap.print();
 		inodePos = inodeBitmap.setFirstEmptyBit();
 		
-		curInodeLoc = inodePos * Constants.INODE_SIZE + sBlock.getFirstInode();
+		curInodeLoc = (inodePos-1) * Constants.INODE_SIZE + sBlock.getFirstInode();
 		curInode.setMode(fileMode);
 		curInode.setSize(fileSize);
 		curInode.setAccessedTime(dateLong);
@@ -59,7 +62,7 @@ public class FileOper {
 			}
 			else
 			{
-				blockPos = (blockPos + sBlock.getFirstDataBlock())*sBlock.getBlockSize();
+				blockPos = (blockPos + sBlock.getFirstDataBlock() - 1)*sBlock.getBlockSize();
 				curInode.setBlock(i, blockPos);
 			}
 		}
@@ -85,6 +88,11 @@ public class FileOper {
 		DirectoryEntry prevDirEntry = new DirectoryEntry();
 		DirectoryEntry dirEntry = new DirectoryEntry();
 		DirectoryEntry tailEntry = new DirectoryEntry();
+		
+		if(FSUtils.isFileNameExists(raFile, fileName, parInode.getBlock(0))){
+			return Constants.ERR_FILE_NAME_EXISTS;
+		}
+		
 		err = updateNewFileDetails(fileMode,size);
 		if(err != Constants.NO_ERROR)
 		{

@@ -22,7 +22,6 @@ public class FileSystem {
 	
 	public FileSystem(){
 		sep = File.separator;
-		System.out.println(sep);
 	}
 	public static void main(String[] args){
 		boolean fileNameOk = false;
@@ -78,9 +77,11 @@ public class FileSystem {
 			setFileSystemObjects();
 			updateFileSystem();
 			displaySuperBlock();
-			blockBitmap.print();
+			blockBitmap = FSUtils.getBitmap(raFile, sBlock.getBlocksCount(), true);
+			//blockBitmap.print();
 			System.out.println();
-			inodeBitmap.print();
+			inodeBitmap = FSUtils.getBitmap(raFile, sBlock.getInodeCount(), false);
+			//inodeBitmap.print();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -151,7 +152,7 @@ public class FileSystem {
 		try{
 			FSUtils.updateSuperblock(raFile, sBlock);
 			FSUtils.updateInode(raFile, initInode, blockSize * 3);
-			FSUtils.updateInitDirEntry(raFile, blockSize*3, 0, true, firstDataBlock*blockSize);
+			FSUtils.updateInitDirEntry(raFile, blockSize*3, 0, true, (firstDataBlock-1)*blockSize);
 			blockBitmap.setAtPos(1);
 			inodeBitmap.setAtPos(1);
 			FSUtils.updateBitmap(raFile,blockBitmap, blockSize);
@@ -187,7 +188,7 @@ public class FileSystem {
 		initInode.setDeletedTime(GeneralUtils.getLongFromDate(now));
 		initInode.setLinksCount((byte)(0));
 		initInode.setBlocksCount(1);
-		initInode.setBlock(0, firstDataBlock*blockSize);
+		initInode.setBlock(0, (firstDataBlock-1)*blockSize);
 		for(int i = 1; i < Constants.BLOCKS_PER_INODE - 1; ++i){
 			initInode.setBlock(i, 0);
 		}

@@ -12,7 +12,8 @@ public class DirectoryOper extends FileOper{
 	
 	public int create(Inode parInode, String fileName){
 		int err = Constants.NO_ERROR;
-		err = addFile(parInode, fileName, Constants.FT_DIR, Constants.DIR, 1);
+		Superblock sBlock = FSUtils.getSuperblock(raFile);
+		err = addFile(parInode, fileName, Constants.FT_DIR, Constants.DIR, sBlock.getBlockSize());
 		if(err != Constants.NO_ERROR)
 		{
 			return err;
@@ -41,7 +42,7 @@ public class DirectoryOper extends FileOper{
 					return null;
 				}				
 				inode = FSUtils.getInode(raFile, inodeNum);
-				dirList = FSUtils.getDirEntryList(raFile, inode.getBlock(0));
+				dirList = FSUtils.getNavigateList(raFile, inode.getBlock(0));
 			}
 		}
 		

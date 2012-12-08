@@ -142,12 +142,13 @@ public class FSUtils {
 	
 	public static Bitmap getBitmap(RandomAccessFile raFile,int size, boolean isBlockBitmap){
 		Bitmap bitmap = new Bitmap(size);
+		Superblock sBlock = getSuperblock(raFile);
 		try{
 			if(isBlockBitmap){
-				raFile.seek(Constants.BLOCK_BITMAP_BLK_POS);
+				raFile.seek((Constants.BLOCK_BITMAP_BLK_POS-1) * sBlock.getBlockSize());
 			}
 			else{
-				raFile.seek(Constants.INODE_BITMAP_BLK_POS);
+				raFile.seek((Constants.INODE_BITMAP_BLK_POS-1) * sBlock.getBlockSize());
 			}
 			for(int i = 0; i<bitmap.getWords();++i){
 				bitmap.setMapAtPos(i, raFile.readInt());
@@ -198,6 +199,7 @@ public class FSUtils {
 		int inode = -1;
 		while(inode!=0){
 			entry = getDirEntry(raFile,pos);
+			inode = entry.getInode();
 			if(entry.getName().equals(fileName)){
 				return true;
 			}
@@ -222,13 +224,29 @@ public class FSUtils {
 		}
 	}
 	
+	public static ArrayList<DirectoryEntry> getNavigateList(RandomAccessFile raFile, long pos){
+		ArrayList<DirectoryEntry> entryList = new ArrayList<DirectoryEntry>();
+		DirectoryEntry entry = new DirectoryEntry();
+		int inode = -1;
+		while(inode!=0){
+			entry = getDirEntry(raFile, pos);
+			inode = entry.getInode();
+			entryList.add(entry);
+			pos += entry.getRecordLength();
+		}
+		return entryList;
+	}
+	
 	public static ArrayList<DirectoryEntry> getDirEntryList(RandomAccessFile raFile, long pos){
 		ArrayList<DirectoryEntry> entryList = new ArrayList<DirectoryEntry>();
 		DirectoryEntry entry = new DirectoryEntry();
 		int inode = -1;
 		while(inode!=0){
 			entry = getDirEntry(raFile,pos);
-			entryList.add(entry);
+			inode = entry.getInode();
+			if(!entry.getName().equals("") && !entry.getName().equals(".") && !entry.getName().equals("..")){
+				entryList.add(entry);
+			}
 			pos += entry.getRecordLength();
 		}
 		return entryList;
