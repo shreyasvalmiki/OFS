@@ -76,12 +76,12 @@ public class FSUtils {
 				raFile.seek(pos);
 
 				raFile.writeInt(parInodeIdx);
-				raFile.writeInt(Constants.INIT_DIR_ENTRY_SIZE);
+				raFile.writeInt(Constants.INIT_PAR_DIR_ENTRY_SIZE);
 				raFile.writeByte(2);
 				raFile.writeByte(Constants.FT_DIR);
 				raFile.writeChars("..");
 
-				pos += Constants.INIT_DIR_ENTRY_SIZE;
+				pos += Constants.INIT_PAR_DIR_ENTRY_SIZE;
 			}
 
 			raFile.seek(pos);
@@ -161,7 +161,7 @@ public class FSUtils {
 	}
 	public static DirectoryEntry getDirEntry(RandomAccessFile raFile, long pos){
 		DirectoryEntry dirEntry = new DirectoryEntry();
-		String name = new String();
+		String name = "";
 		try{
 			raFile.seek(pos);
 			
@@ -169,9 +169,9 @@ public class FSUtils {
 			dirEntry.setRecordLength(raFile.readInt());
 			dirEntry.setNameLength(raFile.readByte());
 			dirEntry.setFileType(raFile.readByte());
-			
+			//name = raFile.readUTF();
 			for(int i = 0; i<dirEntry.getNameLength(); i++){
-				name += raFile.readChar();
+				name += String.valueOf(raFile.readChar());
 			}
 			dirEntry.setName(name);
 		} catch (IOException e) {
@@ -214,10 +214,11 @@ public class FSUtils {
 			raFile.writeInt(dirEntry.getInode());
 			raFile.writeInt(dirEntry.getRecordLength());
 			raFile.writeByte(dirEntry.getNameLength());
-			raFile.writeInt(dirEntry.getFileType());
+			raFile.writeByte(dirEntry.getFileType());
+			
 			raFile.writeChars(dirEntry.getName());
 			
-			
+				
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -257,4 +258,5 @@ public class FSUtils {
 		Inode inode = getInode(raFile, sBlock.getFirstInode());
 		return inode;
 	}
+	
 }

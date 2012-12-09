@@ -30,6 +30,7 @@ public class Bitmap {
 		mask = Constants.HEX_EMPTY_WORD >>> (position & Constants.HEX_WORD_SIZE);
 		word = map[wordIndex];
 		map[wordIndex] = word | mask;
+		//System.out.println(Integer.toBinaryString(word | mask));
 	}
 	
 	//unsets at bit map position
@@ -50,10 +51,14 @@ public class Bitmap {
 		int mask;
 		int word;
 		wordIndex = position >> Constants.WORD_SHIFT;
-		mask = Constants.HEX_EMPTY_WORD >>> (position & Constants.HEX_WORD_SIZE);
-		word = map[wordIndex];
 		
-		return (mask & word) == 1;
+		mask = Constants.HEX_EMPTY_WORD >>> (position & Constants.HEX_WORD_SIZE);
+		//System.out.println();
+		//System.out.println(Integer.toBinaryString(mask));
+		word = map[wordIndex];
+		//System.out.println(Integer.toBinaryString(word));
+		//System.out.println((mask&word)!=0);
+		return (mask & word) !=0;
 	}
 	
 	//
@@ -73,7 +78,7 @@ public class Bitmap {
 	}
 	
 	public int getFirstFreeBit(){
-		for(int i = 2;i < size;++i){
+		for(int i = 1;i < size;++i){
 			if(!isSetAtPos(i))
 			{
 				return i;
@@ -83,7 +88,7 @@ public class Bitmap {
 	}
 	
 	public int setFirstEmptyBit(){
-		for(int i = 2;i < size;++i){
+		for(int i = 1;i < size;++i){
 			if(!isSetAtPos(i))
 			{
 				setAtPos(i);

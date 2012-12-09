@@ -77,10 +77,10 @@ public class FileSystem {
 			setFileSystemObjects();
 			updateFileSystem();
 			displaySuperBlock();
-			blockBitmap = FSUtils.getBitmap(raFile, sBlock.getBlocksCount(), true);
-			//blockBitmap.print();
-			System.out.println();
-			inodeBitmap = FSUtils.getBitmap(raFile, sBlock.getInodeCount(), false);
+//			blockBitmap = FSUtils.getBitmap(raFile, sBlock.getBlocksCount(), true);
+//			//blockBitmap.print();
+//			System.out.println();
+//			inodeBitmap = FSUtils.getBitmap(raFile, sBlock.getInodeCount(), false);
 			//inodeBitmap.print();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

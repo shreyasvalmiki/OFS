@@ -1,5 +1,6 @@
 package ofs.oper;
 
+import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.*;
 import ofs.ds.*;
@@ -10,16 +11,19 @@ public class Shell {
 
 	public RandomAccessFile raFile;
 	public Inode currInode = new Inode();
+	public DirectoryEntry currEntry = new DirectoryEntry();
+	public int currInodeLoc = 0;
 	public int fileSize;
 	public int blockSize;
 	public String fileName = new String();
 	public Superblock sBlock = new Superblock();
-	public static HashMap<Integer,String> errMap = new HashMap<Integer,String>();
-	public static HashMap<Integer,String> ftMap = new HashMap<Integer,String>();
+	public HashMap<Integer,String> errMap = new HashMap<Integer,String>();
+	public HashMap<Integer,String> ftMap = new HashMap<Integer,String>();
 	public static Scanner in = new Scanner(System.in);
 
 	public static void main(String[] args){
 		Shell sh = new Shell();
+		
 		FileSystem fs = new FileSystem();
 
 		String fileOption = "0";
@@ -65,22 +69,32 @@ public class Shell {
 
 				sh.sBlock = FSUtils.getSuperblock(sh.raFile);
 				sh.currInode = FSUtils.getRootInode(sh.raFile);
+				sh.setCurrDirEntry();
 			}
 			//			}
-
+			System.out.println();
 			System.out.println("Please select a file operation:");
 			System.out.println("1. Create directory");
 			System.out.println("2. List");
 			System.out.println("3. Navigate to other directory");
 			System.out.println("4. Create a file");
-			System.out.println("5. View file");
-			System.out.println("6. Remove directory");
-			System.out.println("7. Remove file");
+			//System.out.println("5. View file");
+			//System.out.println("6. Remove directory");
+			//System.out.println("7. Remove file");
 			System.out.println("9. Choose a different filesystem");
 			System.out.println("0. Exit");
 
 			fileOption = in.next();
-
+			if(fileOption.equals("0")){
+				try {
+					sh.raFile.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					System.exit(1);
+				}
+				System.exit(1);
+				
+			}
 			if(fileOption.equals("1")){
 				sh.createDir();
 			}
@@ -88,14 +102,17 @@ public class Shell {
 				sh.list();
 			}
 			else if(fileOption.equals("3")){
-
 				sh.navigate();
 			}
 			else if(fileOption.equals("4")){
 				sh.createRegFile();
 			}
-
-
+			else if(fileOption.equals("9")){
+				isFileSysSet = false;
+			}
+			System.out.println();
+			System.out.print("Press 'c' to continue");
+			in.next();
 		}while(!isExit);
 		in.close();
 	}
@@ -119,10 +136,7 @@ public class Shell {
 		int err = -1;
 		DirectoryOper dirOp = new DirectoryOper(raFile);
 		while(!done){
-			System.out.println("before dir create");
-			err = dirOp.create(currInode, name);
-			//test
-			System.out.println("after dir create");
+			err = dirOp.create(currInode, currInodeLoc, name);
 			if(err == Constants.NO_ERROR){
 				System.out.println(name+" has been created.");
 				done = true;
@@ -154,7 +168,7 @@ public class Shell {
 				sizeIsInt = false;
 				err = Constants.ERR_FILE_SIZE_NOT_INT;
 			}
-			if(!sizeIsInt){
+			if(sizeIsInt){
 				err = regFile.create(currInode, name, sizeInt);
 			}
 			if(err == Constants.NO_ERROR || !sizeIsInt){
@@ -173,18 +187,17 @@ public class Shell {
 
 	private void list(){
 		ArrayList<DirectoryEntry> dirArr = new ArrayList<DirectoryEntry>();
-		dirArr = FSUtils.getNavigateList(raFile, currInode.getBlock(0));
+		dirArr = FSUtils.getDirEntryList(raFile, currInode.getBlock(0));
 		Inode inode = new Inode();
 		for(DirectoryEntry entry: dirArr){
 			inode = FSUtils.getInode(raFile, entry.getInode());
-			System.out.println("Created on: "+GeneralUtils.getDateFromLong(inode.getCreatedTime())+ "\t" + entry.getName() + "\t" + ftMap.get(entry.getFileType()));
+			System.out.println(entry.getName() + "\t" + GeneralUtils.getDateFromLong(inode.getCreatedTime())+ "\t" + this.ftMap.get((int)entry.getFileType()));
 		}
 	}
 
 	private void navigate(){
 		String path = ".";
 		DirectoryOper dir = new DirectoryOper(raFile);
-		int err = 0;
 		Inode inode = new Inode();
 		System.out.print("Enter path (eg: /abc/dec/fcd -- from root. xyz/teu -- from current dir):");
 		path = in.next();
@@ -197,10 +210,16 @@ public class Shell {
 		}
 
 		currInode = inode;
+		setCurrDirEntry();
 		System.out.println("You are currently in "+path);
 	}
 
 	private void displayError(int err){
 		System.out.println(errMap.get(err));
+	}
+	
+	private void setCurrDirEntry(){
+		currEntry = FSUtils.getDirEntry(raFile, currInode.getBlock(0));
+		currInodeLoc = currEntry.getInode();
 	}
 }

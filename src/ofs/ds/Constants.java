@@ -2,6 +2,7 @@ package ofs.ds;
 
 public class Constants {
 	//public static final int SUPERBLOCK_SIZE = 68;
+	public static final int CHAR_SIZE_IN_BYTES = 2;
 	public static final int BLOCK_BITMAP_BLK_POS = 2;
 	public static final int INODE_BITMAP_BLK_POS = 3;
 	public static final int BYTE_SIZE = 8;
@@ -30,6 +31,7 @@ public class Constants {
 	
 	//Directory entry constants
 	public static final int INIT_DIR_ENTRY_SIZE = 12;
+	public static final int INIT_PAR_DIR_ENTRY_SIZE = 16;
 	public static final int DIR_ENTRY_SIZE_SANS_NAME = 10;
 	public static final int FT_UNKNOWN = 0;
 	public static final int FT_REG_FILE = 1;

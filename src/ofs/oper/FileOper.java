@@ -30,7 +30,9 @@ public class FileOper {
 		long dateLong = GeneralUtils.getLongFromDate(date);
 		sBlock = FSUtils.getSuperblock(raFile);
 		
-		blockCount = (int) Math.ceil(fileSize/sBlock.getBlockSize());
+		blockCount = fileSize;
+		//blockCount += blockCount%sBlock.getBlockSize()==0?0:1;
+		
 		
 		if(sBlock.getFreeBlocksCount() < blockCount || sBlock.getFreeInodesCount() < 1){
 			return Constants.ERR_INSUFF_MEM;
@@ -41,9 +43,9 @@ public class FileOper {
 		blockBitmap = FSUtils.getBitmap(raFile, sBlock.getBlocksCount(), true);
 		inodeBitmap = FSUtils.getBitmap(raFile, sBlock.getInodeCount(), false);
 		
-		blockBitmap.print();
-		System.out.println();
-		inodeBitmap.print();
+//		blockBitmap.print();
+//		System.out.println();
+//		inodeBitmap.print();
 		inodePos = inodeBitmap.setFirstEmptyBit();
 		
 		curInodeLoc = (inodePos-1) * Constants.INODE_SIZE + sBlock.getFirstInode();
@@ -69,8 +71,7 @@ public class FileOper {
 		sBlock.setFreeBlocksCount(sBlock.getFreeBlocksCount() - blockCount);
 		sBlock.setFreeInodesCount(sBlock.getFreeInodesCount() - 1);
 		
-		FSUtils.updateSuperblock(raFile, sBlock);
-		FSUtils.updateInode(raFile, curInode, inodePos);
+		
 		
 		return Constants.NO_ERROR;
 	}
@@ -84,7 +85,7 @@ public class FileOper {
 		int recordLength;
 		long posDiff;
 		long tailDiff;
-		Bitmap blockBitmap;
+		//Bitmap blockBitmap;
 		DirectoryEntry prevDirEntry = new DirectoryEntry();
 		DirectoryEntry dirEntry = new DirectoryEntry();
 		DirectoryEntry tailEntry = new DirectoryEntry();
@@ -98,13 +99,13 @@ public class FileOper {
 		{
 			return err;
 		}
-		blockBitmap = FSUtils.getBitmap(raFile, sBlock.getBlocksCount(), true);
+		//blockBitmap = FSUtils.getBitmap(raFile, sBlock.getBlocksCount(), true);
 		
-		recordLength = (Constants.DIR_ENTRY_SIZE_SANS_NAME + fileName.length());
+		recordLength = (Constants.DIR_ENTRY_SIZE_SANS_NAME + fileName.length()*Constants.CHAR_SIZE_IN_BYTES);
 		recordLength = recordLength % 4 == 0 ? recordLength : recordLength + (4 - recordLength%4);
 		
 		prevPos = FSUtils.getLastDirEntry(raFile, parInode.getBlock(0));
-		parInodeLoc =(int) prevPos;
+		//parInodeLoc =(int) prevPos;
 		prevDirEntry = FSUtils.getDirEntry(raFile, prevPos);
 		posDiff = prevPos+prevDirEntry.getRecordLength() - parInode.getBlock(0);
 		pos = prevPos+prevDirEntry.getRecordLength();
@@ -118,17 +119,17 @@ public class FileOper {
 			}
 		}
 		posDiff = pos+prevDirEntry.getRecordLength() - parInode.getBlock(0);
-		tailPos = pos+prevDirEntry.getRecordLength();
+		tailPos = pos+recordLength;
 		if(posDiff - sBlock.getBlockSize() > 0){
 			tailPos = blockBitmap.setFirstEmptyBit();
 			if(pos == -1){
 				return Constants.ERR_INSUFF_MEM;
 			}
 			else{
-				blockBitmap.unsetAtPos((int)(pos/sBlock.getBlockSize() - sBlock.getFirstDataBlock()));
+				//blockBitmap.unsetAtPos((int)(pos/sBlock.getBlockSize() - sBlock.getFirstDataBlock()));
 				tailPos = (sBlock.getFirstDataBlock() + pos) * sBlock.getBlockSize(); 
 			}
-		}	
+		}
 		
 		prevDirEntry.setRecordLength((int)(pos - prevPos));
 		
@@ -138,18 +139,25 @@ public class FileOper {
 		dirEntry.setNameLength((byte)fileName.length());
 		dirEntry.setRecordLength((int)(tailPos - pos));
 		
-		tailDiff = (int)Math.floor(tailPos/sBlock.getBlockSize());
-		tailDiff = sBlock.getBlockSize() - (tailPos - tailDiff);
+		tailDiff = tailPos%sBlock.getBlockSize();
+		tailDiff = sBlock.getBlockSize() - tailDiff;
 		
 		tailEntry.setInode(0);
 		tailEntry.setFileType((byte)0);
 		tailEntry.setName("");
 		tailEntry.setNameLength((byte)0);
-		dirEntry.setRecordLength((int)tailDiff);
+		tailEntry.setRecordLength((int)tailDiff);
 		
 		FSUtils.updateDirEntry(raFile, prevDirEntry, prevPos);
 		FSUtils.updateDirEntry(raFile, dirEntry, pos);
 		FSUtils.updateDirEntry(raFile, tailEntry, tailPos);
+		
+		FSUtils.updateBitmap(raFile, blockBitmap, (Constants.BLOCK_BITMAP_BLK_POS-1)*sBlock.getBlockSize());
+		
+		FSUtils.updateSuperblock(raFile, sBlock);
+		FSUtils.updateInode(raFile, curInode, curInodeLoc);
+		
+		FSUtils.updateBitmap(raFile, inodeBitmap, (Constants.INODE_BITMAP_BLK_POS-1)*sBlock.getBlockSize());
 		
 		return err;
 		
