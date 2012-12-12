@@ -78,7 +78,7 @@ public class Shell {
 			System.out.println("2. List");
 			System.out.println("3. Navigate to other directory");
 			System.out.println("4. Create a file");
-			//System.out.println("5. View file");
+			System.out.println("5. Delete");
 			//System.out.println("6. Remove directory");
 			//System.out.println("7. Remove file");
 			System.out.println("9. Choose a different filesystem");
@@ -107,6 +107,9 @@ public class Shell {
 			else if(fileOption.equals("4")){
 				sh.createRegFile();
 			}
+			else if(fileOption.equals("5")){
+				sh.delete();
+			}
 			else if(fileOption.equals("9")){
 				isFileSysSet = false;
 			}
@@ -122,7 +125,8 @@ public class Shell {
 		errMap.put(Constants.ERR_FILE_TOO_LARGE, "Error! File too large.");
 		errMap.put(Constants.ERR_FILE_NAME_EXISTS, "Error! Filename exists.");
 		errMap.put(Constants.ERR_INVALID_PATH, "Error! Not a valid path.");
-		errMap.put(Constants.ERR_FILE_SIZE_NOT_INT, "Error! File size is not an integer");
+		errMap.put(Constants.ERR_FILE_SIZE_NOT_INT, "Error! File size is not an integer.");
+		errMap.put(Constants.ERR_FILE_DOES_NOT_EXIST, "Error! File does not exist.");
 
 		ftMap.put(Constants.FT_DIR, "DIR");
 		ftMap.put(Constants.FT_REG_FILE, "File");
@@ -213,7 +217,20 @@ public class Shell {
 		setCurrDirEntry();
 		System.out.println("You are currently in "+path);
 	}
-
+	
+	private void delete(){
+		System.out.println("Enter the name of the file or directory to delete: ");
+		String fileName = in.next();
+		FileOper fOper = new FileOper(raFile);
+		int err = fOper.deleteFile(currInodeLoc, fileName);
+		if(err == Constants.NO_ERROR){
+			System.out.println(fileName + " is removed from the current directory");
+		}
+		else{
+			displayError(err);
+		}
+	}
+	
 	private void displayError(int err){
 		System.out.println(errMap.get(err));
 	}

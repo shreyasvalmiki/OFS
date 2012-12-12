@@ -51,12 +51,5 @@ public class DirectoryOper extends FileOper{
 		return inode;
 	}
 	
-	public int getInodeWithName(String name, ArrayList<DirectoryEntry> dirList){
-		for(DirectoryEntry entry: dirList){
-			if(entry.getName().equals(name) && entry.getFileType() == Constants.FT_DIR){
-				return entry.getInode();
-			}
-		}
-		return -1;
-	}
+	
 }

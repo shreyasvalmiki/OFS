@@ -45,4 +45,5 @@ public class Constants {
 	public static final int ERR_FILE_NAME_EXISTS = 3;
 	public static final int ERR_INVALID_PATH = 4;
 	public static final int ERR_FILE_SIZE_NOT_INT = 5;
+	public static final int ERR_FILE_DOES_NOT_EXIST = 6;
 }

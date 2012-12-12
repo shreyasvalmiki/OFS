@@ -194,6 +194,30 @@ public class FSUtils {
 		}
 	}
 	
+	public static ArrayList<DirectoryEntry> getThisAndPrevEntry(RandomAccessFile raFile, String fileName,long pos){
+		ArrayList<DirectoryEntry> dirEntryList = new ArrayList<>();
+		DirectoryEntry prevEntry = new DirectoryEntry();
+		DirectoryEntry thisEntry = new DirectoryEntry();
+		DirectoryEntry nextEntry = new DirectoryEntry();
+		boolean isDone = false;
+		while(!isDone){
+			prevEntry = thisEntry;
+			thisEntry = getDirEntry(raFile,pos);
+			nextEntry = getDirEntry(raFile,pos+thisEntry.getRecordLength());
+			if(thisEntry.getName().equals(fileName)){
+				dirEntryList.add(prevEntry);
+				dirEntryList.add(thisEntry);
+				return dirEntryList;
+			}
+			else if(nextEntry.getInode() == 0){
+				return null;
+			}
+			pos += thisEntry.getRecordLength();
+		}
+		
+		return dirEntryList;
+	}
+	
 	public static boolean isFileNameExists(RandomAccessFile raFile, String fileName, long pos){
 		DirectoryEntry entry = new DirectoryEntry();
 		int inode = -1;
@@ -253,10 +277,40 @@ public class FSUtils {
 		return entryList;
 	}
 	
+	public static long getDirEntryPos(RandomAccessFile raFile,String fileName, long pos){
+		ArrayList<DirectoryEntry> entryList = new ArrayList<DirectoryEntry>();
+		entryList = getNavigateList(raFile, pos);
+		for(DirectoryEntry entry: entryList){
+			if(entry.getName().equals(fileName)){
+				return pos;
+			}
+			pos += entry.getRecordLength();
+		}
+		return 0;
+	}
+	
 	public static Inode getRootInode(RandomAccessFile raFile){
 		Superblock sBlock = getSuperblock(raFile);
 		Inode inode = getInode(raFile, sBlock.getFirstInode());
 		return inode;
 	}
 	
+	
+	public static void deleteComponents(RandomAccessFile raFile, long pos){
+		Inode inode = getInode(raFile, pos);
+		Superblock sBlock = getSuperblock(raFile);
+		Bitmap inodeBitmap = getBitmap(raFile,sBlock.getInodeCount(),false);
+		Bitmap blockBitmap = getBitmap(raFile,sBlock.getBlocksCount(),true);
+		
+		inodeBitmap.unsetAtPos((int) ((pos-sBlock.getFirstInode())/sBlock.getBlockSize()));
+		
+		for(int i=0;i<Constants.DIRECT_LINKS_CNT;++i){
+			if(inode.getBlock(i)!=0 && inode.getBlock(i)!=-1){
+				blockBitmap.unsetAtPos((int)(inode.getBlock(i)/sBlock.getBlockSize()) - sBlock.getFirstDataBlock());
+			}
+		}
+		
+		updateBitmap(raFile, inodeBitmap, (Constants.INODE_BITMAP_BLK_POS - 1)*sBlock.getBlockSize());
+		updateBitmap(raFile, blockBitmap, (Constants.BLOCK_BITMAP_BLK_POS - 1)*sBlock.getBlockSize());
+	}
 }
