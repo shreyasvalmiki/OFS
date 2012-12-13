@@ -7,6 +7,7 @@ public class Constants {
 	public static final int INODE_BITMAP_BLK_POS = 3;
 	public static final int BYTE_SIZE = 8;
 	public static final int SECTOR_SIZE = 512;
+	public static final int ONE_MEG = 1048576;
 	public static final int SUPERBLOCK_SIZE = 40;
 	public static final int INODE_SIZE = 109;
 	public static final int WORD_SIZE = 32;

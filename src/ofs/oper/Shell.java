@@ -28,7 +28,7 @@ public class Shell {
 
 	public static void main(String[] args){
 		Shell sh = new Shell();
-		
+
 		FileSystem fs = new FileSystem();
 
 		String fileOption = "0";
@@ -36,7 +36,7 @@ public class Shell {
 		boolean isFileSysSet = false;
 
 		boolean isExit = false;
-		
+
 		do{
 
 			while(!isFileSysSet){
@@ -47,13 +47,18 @@ public class Shell {
 					System.out.println(sh.fileName + " is not avalable. Do you want to create? [Y/N]");
 					String dec = in.next();
 					if(dec.equalsIgnoreCase("Y")){
-						isFileSysSet = true;
-						System.out.println("Enter file size in order of 2 (eg. 1024000):");
-						sh.fileSize = in.nextInt();
-						System.out.println("Enter block size in multiples of 512 bytes (eg. enter 1 for 1*512, 2 for 2*512):");
-						sh.blockSize = Constants.SECTOR_SIZE*in.nextInt();
-
-						sh.raFile = fs.create(sh.fileName,sh.fileSize,sh.blockSize);
+						try {
+							System.out.println("Enter file size in MBs:");
+							sh.fileSize = Constants.ONE_MEG*in.nextInt();
+							System.out.println("Enter block size in 512 bytes (eg. enter 1 for 1*512 bytes, 2 for 2*512 bytes, etc):");
+							sh.blockSize = Constants.SECTOR_SIZE*in.nextInt();
+							sh.raFile = fs.create(sh.fileName,sh.fileSize,sh.blockSize);
+							isFileSysSet = true;
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							System.out.println("Please enter correct values");
+							in.next();
+						}
 					}
 				}
 				else
@@ -63,12 +68,12 @@ public class Shell {
 					sh.raFile = fs.get(sh.fileName);
 					fs.displaySuperBlock();	
 				}
-
-				sh.sBlock = FSUtils.getSuperblock(sh.raFile);
-				sh.currInode = FSUtils.getRootInode(sh.raFile);
-				sh.setCurrDirEntry();
+				if(isFileSysSet){
+					sh.sBlock = FSUtils.getSuperblock(sh.raFile);
+					sh.currInode = FSUtils.getRootInode(sh.raFile);
+					sh.setCurrDirEntry();
+				}
 			}
-			//			}
 			System.out.println();
 			System.out.println("Please select a file operation:");
 			System.out.println("1. Create directory");
@@ -76,8 +81,6 @@ public class Shell {
 			System.out.println("3. Navigate to other directory");
 			System.out.println("4. Create a file");
 			System.out.println("5. Delete");
-			//System.out.println("6. Remove directory");
-			//System.out.println("7. Remove file");
 			System.out.println("9. Choose a different filesystem");
 			System.out.println("0. Exit");
 
@@ -90,7 +93,7 @@ public class Shell {
 					System.exit(1);
 				}
 				System.exit(1);
-				
+
 			}
 			if(fileOption.equals("1")){
 				sh.createDir();
@@ -153,7 +156,7 @@ public class Shell {
 			}
 		}
 	}
-	
+
 	/**
 	 * Creates a regular file
 	 */
@@ -193,7 +196,7 @@ public class Shell {
 			}
 		}
 	}
-	
+
 	/**
 	 * Lists all the files and directories present in the current directory
 	 */
@@ -206,7 +209,7 @@ public class Shell {
 			System.out.println(entry.getName() + "\t" + GeneralUtils.getDateFromLong(inode.getCreatedTime())+ "\t" + this.ftMap.get((int)entry.getFileType()));
 		}
 	}
-	
+
 	/**
 	 * Navigates to a desired directory
 	 */
@@ -228,7 +231,7 @@ public class Shell {
 		setCurrDirEntry();
 		System.out.println("You are currently in "+path);
 	}
-	
+
 	/**
 	 * Deletes a directory or a regular file
 	 */
@@ -244,7 +247,7 @@ public class Shell {
 			displayError(err);
 		}
 	}
-	
+
 	/**
 	 * Displays the error message based on the error number
 	 * @param err
@@ -252,7 +255,7 @@ public class Shell {
 	private void displayError(int err){
 		System.out.println(errMap.get(err));
 	}
-	
+
 	/**
 	 * Sets the current directory
 	 */
