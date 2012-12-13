@@ -40,9 +40,12 @@ public class FileOper {
 		Date date = new Date();
 		long dateLong = GeneralUtils.getLongFromDate(date);
 		sBlock = FSUtils.getSuperblock(raFile);
-
-		blockCount = fileSize;
-
+		
+		blockCount = (int)Math.floor(fileSize/sBlock.getBlockSize());
+		if(fileSize%sBlock.getBlockSize() != 0){
+			++blockCount;
+		}
+		
 		if(sBlock.getFreeBlocksCount() < blockCount || sBlock.getFreeInodesCount() < 1){
 			return Constants.ERR_INSUFF_MEM;
 		}

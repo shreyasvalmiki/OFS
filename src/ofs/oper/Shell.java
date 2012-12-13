@@ -79,8 +79,9 @@ public class Shell {
 			System.out.println("1. Create directory");
 			System.out.println("2. List");
 			System.out.println("3. Navigate to other directory");
-			System.out.println("4. Create a file");
+			System.out.println("4. Create a text file");
 			System.out.println("5. Delete");
+			System.out.println("6. Show file contents");
 			System.out.println("9. Choose a different filesystem");
 			System.out.println("0. Exit");
 
@@ -110,6 +111,9 @@ public class Shell {
 			else if(fileOption.equals("5")){
 				sh.delete();
 			}
+			else if(fileOption.equals("6")){
+				sh.printFileContents();
+			}
 			else if(fileOption.equals("9")){
 				isFileSysSet = false;
 			}
@@ -129,6 +133,7 @@ public class Shell {
 		errMap.put(Constants.ERR_INVALID_PATH, "Error! Not a valid path.");
 		errMap.put(Constants.ERR_FILE_SIZE_NOT_INT, "Error! File size is not an integer.");
 		errMap.put(Constants.ERR_FILE_DOES_NOT_EXIST, "Error! File does not exist.");
+		errMap.put(Constants.ERR_NOT_CORRECT_VAL, "Error! Enter correct values.");
 
 		ftMap.put(Constants.FT_DIR, "DIR");
 		ftMap.put(Constants.FT_REG_FILE, "File");
@@ -141,7 +146,8 @@ public class Shell {
 		String name = "New Dir";
 		boolean done = false;
 		System.out.print("Enter name:");
-		name = in.next();
+		in.nextLine();
+		name = in.nextLine();
 		int err = -1;
 		DirectoryOper dirOp = new DirectoryOper(raFile);
 		while(!done){
@@ -162,38 +168,17 @@ public class Shell {
 	 */
 	private void createRegFile(){
 		String name = "New Dir";
-		String size;
-		int sizeInt = 0;
-		boolean done = false;
-		boolean sizeIsInt = true;
-		System.out.print("Enter name of file:");
-		name = in.next();
-		System.out.println("Enter size of file");
-		size = in.next();
+		String content;
+		System.out.print("Enter name of text file:");
+		in.nextLine();
+		name = in.nextLine();
+		System.out.println("Enter content");
+		content = in.nextLine();
 		int err = Constants.NO_ERROR;
 		RegFileOper regFile = new RegFileOper(raFile);
-		while(!done){	
-			try{
-				sizeInt = Integer.parseInt(size);
-				sizeIsInt = true;
-			}catch(Exception ex){
-				sizeIsInt = false;
-				err = Constants.ERR_FILE_SIZE_NOT_INT;
-			}
-			if(sizeIsInt){
-				err = regFile.create(currInode, name, sizeInt);
-			}
-			if(err == Constants.NO_ERROR || !sizeIsInt){
-				System.out.println(name + " has been created.");
-				done = true;
-			}else{
-				displayError(err);
-
-				System.out.println("Enter name again:");
-				name = in.next();
-				System.out.println("Enter size in integer");
-				size = in.next();
-			}
+		err = regFile.create(currInode, name, content);
+		if(err != Constants.NO_ERROR){
+			displayError(err);
 		}
 	}
 
@@ -218,7 +203,8 @@ public class Shell {
 		DirectoryOper dir = new DirectoryOper(raFile);
 		Inode inode = new Inode();
 		System.out.print("Enter path (eg: /abc/dec/fcd -- from root. xyz/teu -- from current dir):");
-		path = in.next();
+		in.nextLine();
+		path = in.nextLine();
 		inode = dir.navigateTo(path, currInode);
 		while(inode == null){
 			displayError(Constants.ERR_INVALID_PATH);
@@ -237,7 +223,8 @@ public class Shell {
 	 */
 	private void delete(){
 		System.out.println("Enter the name of the file or directory to delete: ");
-		String fileName = in.next();
+		in.nextLine();
+		String fileName = in.nextLine();
 		FileOper fOper = new FileOper(raFile);
 		int err = fOper.deleteFile(currInodeLoc, fileName);
 		if(err == Constants.NO_ERROR){
@@ -247,7 +234,19 @@ public class Shell {
 			displayError(err);
 		}
 	}
-
+	
+	private void printFileContents(){
+		System.out.println("Enter the name of the file: ");
+		in.nextLine();
+		String fileName = in.nextLine();
+		if(!FSUtils.isFileNameExists(raFile, fileName, currInode.getBlock(0))){
+			displayError(Constants.ERR_FILE_DOES_NOT_EXIST);
+		}
+		else{
+			Inode inode = FSUtils.getInode(raFile, FSUtils.getInodePosFromName(raFile, fileName, currInode.getBlock(0)));
+			System.out.println(FSUtils.getTextData(raFile, inode.getSize(), inode.getBlock(0)));
+		}
+	}
 	/**
 	 * Displays the error message based on the error number
 	 * @param err

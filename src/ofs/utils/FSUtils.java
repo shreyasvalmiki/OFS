@@ -8,7 +8,7 @@ import ofs.ds.*;
 
 /**
  * @author shreyasvalmiki
- * Has the utilities necessary for getting from, or updating the filesystem random access file
+ * Has the utilities necessary for getting from, or updating the file system random access file
  */
 public class FSUtils {
 	public static void updateSuperblock(RandomAccessFile raFile,Superblock sBlock){
@@ -29,7 +29,7 @@ public class FSUtils {
 		}
 	}
 	/**
-	 * Writes the bitmap to the filesystem
+	 * Writes the bitmap to the file system
 	 * @param raFile
 	 * @param bitmap
 	 * @param pos
@@ -48,7 +48,7 @@ public class FSUtils {
 		}
 	}
 	/**
-	 * Writes inode to the filesystem
+	 * Writes inode to the file system
 	 * @param raFile
 	 * @param inode
 	 * @param pos
@@ -75,7 +75,7 @@ public class FSUtils {
 	}
 	
 	/**
-	 * Writes the the initial directory entries for any new directory to the filesystem 
+	 * Writes the the initial directory entries for any new directory to the file system 
 	 * @param raFile
 	 * @param curInodeIdx
 	 * @param parInodeIdx
@@ -120,7 +120,7 @@ public class FSUtils {
 	}
 	
 	/**
-	 * Gets the superblock from the filesystem
+	 * Gets the superblock from the file system
 	 * @param raFile
 	 * @return
 	 */
@@ -145,7 +145,7 @@ public class FSUtils {
 	}
 	
 	/**
-	 * Gets an inode from the filesystem
+	 * Gets an inode from the file system
 	 * @param raFile
 	 * @param pos
 	 * @return
@@ -174,7 +174,7 @@ public class FSUtils {
 	}
 	
 	/**
-	 * Gets a bitmap from the filesystem
+	 * Gets a bitmap from the file system
 	 * @param raFile
 	 * @param size
 	 * @param isBlockBitmap
@@ -201,7 +201,7 @@ public class FSUtils {
 	}
 	
 	/**
-	 * Gets a directory entry from the filesystem
+	 * Gets a directory entry from the file system
 	 * @param raFile
 	 * @param pos
 	 * @return
@@ -300,7 +300,7 @@ public class FSUtils {
 	}
 	
 	/**
-	 * Writes a directory entry in the filesystem
+	 * Writes a directory entry in the file system
 	 * @param raFile
 	 * @param dirEntry
 	 * @param pos
@@ -394,7 +394,7 @@ public class FSUtils {
 	}
 	
 	/**
-	 * Deletes all the components of a file from the filesystem
+	 * Deletes all the components of a file from the file system
 	 * Unsets the inode bitmap and the block bitmap
 	 * @param raFile
 	 * @param pos
@@ -415,5 +415,62 @@ public class FSUtils {
 		
 		updateBitmap(raFile, inodeBitmap, (Constants.INODE_BITMAP_BLK_POS - 1)*sBlock.getBlockSize());
 		updateBitmap(raFile, blockBitmap, (Constants.BLOCK_BITMAP_BLK_POS - 1)*sBlock.getBlockSize());
+	}
+	
+	/**
+	 * Gets the Inode position from name of file
+	 * @param raFile
+	 * @param fileName
+	 * @param pos
+	 * @return
+	 */
+	public static long getInodePosFromName(RandomAccessFile raFile, String fileName, long pos){
+		ArrayList<DirectoryEntry> entryList = new ArrayList<>();
+		entryList = getDirEntryList(raFile, pos);
+		
+		for(DirectoryEntry entry: entryList){
+			if(entry.getName().equals(fileName)){
+				return entry.getInode();
+			}
+		}
+		return -1;
+	}
+	
+	/**
+	 * Inserts text data into the file system
+	 * @param raFile
+	 * @param content
+	 * @param pos
+	 */
+	public static void insertTextData(RandomAccessFile raFile, String content, long pos){
+		try {
+			raFile.seek(pos);
+			raFile.writeChars(content);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Gets text data from the file system
+	 * @param raFile
+	 * @param size
+	 * @param pos
+	 * @return
+	 */
+	public static String getTextData(RandomAccessFile raFile, int size, long pos){
+		String content = "";
+		try {
+			raFile.seek(pos);
+			for(int i=0;i<size;i++){
+				content += raFile.readChar();
+			}
+			raFile.writeChars(content);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return content;
 	}
 }
