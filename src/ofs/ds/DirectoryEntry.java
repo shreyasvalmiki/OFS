@@ -1,6 +1,8 @@
 package ofs.ds;
 /**
  * Gets an sets elements in the directory entry
+ * 
+ * Reference: http://www.nongnu.org/ext2-doc/
  * @author shreyasvalmiki
  *
  */

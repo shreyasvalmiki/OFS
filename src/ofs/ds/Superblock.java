@@ -2,6 +2,13 @@ package ofs.ds;
 
 import ofs.utils.GeneralUtils;
 
+/**
+ * This maintains the properties of the entire file system
+ * 
+ * Reference: http://www.nongnu.org/ext2-doc/
+ * @author shreyasvalmiki
+ *
+ */
 public class Superblock {
 	/**
 	 * 4 bytes
@@ -254,11 +261,8 @@ public class Superblock {
 		System.out.println("Number of Free Blocks:\t\t" + this.freeBlocksCount);
 		System.out.println("Number of Free Inodes:\t\t" + this.freeInodesCount);
 		System.out.println("First Data Block:\t\t" + this.firstDataBlock);
-		//System.out.println("Number of Blocks Per Group:\t\t" + this.blocksPerGroup);
-		//System.out.println("Number of Inodes Per Group:\t\t" + this.inodesPerGroup);
 		System.out.println("Last Written Date and Time:\t" + GeneralUtils.getDateFromLong(this.wTime));
 		System.out.println("First Inode:\t\t\t" + this.firstInode);
 		System.out.println("Inode Size:\t\t\t" + this.inodeSize);
-		//System.out.println("Block Group of Superblock:\t\t" + this.blockGroupNum);
 	}
 }

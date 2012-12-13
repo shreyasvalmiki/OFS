@@ -8,7 +8,7 @@ import ofs.fs.*;
 import ofs.utils.*;
 /**
  * Shell for basic file operations
- * Though it's not so user friendly, it does the job
+ * Though it's not user friendly, it does the job
  * @author shreyasvalmiki
  *
  */
@@ -40,7 +40,7 @@ public class Shell {
 		do{
 
 			while(!isFileSysSet){
-				System.out.println("Enter the file system file you want to use (example: file.dat):");
+				System.out.println("Enter the file system file you want to use:");
 				sh.fileName = in.next();
 				if(!fs.isCreated(sh.fileName))
 				{
@@ -82,6 +82,7 @@ public class Shell {
 			System.out.println("4. Create a text file");
 			System.out.println("5. Delete");
 			System.out.println("6. Show file contents");
+			System.out.println("7. Show file system properties");
 			System.out.println("9. Choose a different filesystem");
 			System.out.println("0. Exit");
 
@@ -114,8 +115,15 @@ public class Shell {
 			else if(fileOption.equals("6")){
 				sh.printFileContents();
 			}
+			else if(fileOption.equals("7")){
+				sh.sBlock = FSUtils.getSuperblock(sh.raFile);
+				sh.sBlock.print();
+			}
 			else if(fileOption.equals("9")){
 				isFileSysSet = false;
+			}
+			else{
+				System.out.println("Please choose a valid option");
 			}
 			System.out.println();
 			System.out.print("Press 'c' to continue");
@@ -189,9 +197,17 @@ public class Shell {
 		ArrayList<DirectoryEntry> dirArr = new ArrayList<DirectoryEntry>();
 		dirArr = FSUtils.getDirEntryList(raFile, currInode.getBlock(0));
 		Inode inode = new Inode();
+		System.out.println("\tName\t\tCreated On\t\t\t\tType");
+		System.out.println("-------------------------------------------------------------------------------------");
 		for(DirectoryEntry entry: dirArr){
 			inode = FSUtils.getInode(raFile, entry.getInode());
-			System.out.println(entry.getName() + "\t" + GeneralUtils.getDateFromLong(inode.getCreatedTime())+ "\t" + this.ftMap.get((int)entry.getFileType()));
+			System.out.println();
+			if(entry.getName().length()>7){
+				System.out.println("\t"+entry.getName() + "\t" + GeneralUtils.getDateFromLong(inode.getCreatedTime())+ "\t\t" + this.ftMap.get((int)entry.getFileType()));
+			}
+			else{
+				System.out.println("\t"+entry.getName() + "\t\t" + GeneralUtils.getDateFromLong(inode.getCreatedTime())+ "\t\t" + this.ftMap.get((int)entry.getFileType()));
+			}
 		}
 	}
 
