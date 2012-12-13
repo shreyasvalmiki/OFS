@@ -3,40 +3,75 @@ package ofs.ds;
 import ofs.utils.GeneralUtils;
 
 public class Superblock {
-	//4 bytes
+	/**
+	 * 4 bytes
+	 */
 	private int blockSize;
-	//4 bytes
+	/**
+	 * 4 bytes
+	 */
 	private int inodeCount;
-	//4 bytes
+	/**
+	 * 4 bytes
+	 */
 	private int blocksCount;
-	//4 bytes
+	/**
+	 * 4 bytes
+	 */
 	private int rBlocksCount;
-	//4 bytes
+	/**
+	 * 4 bytes
+	 */
 	private int freeBlocksCount;
-	//4 bytes
+	/**
+	 * 4 bytes
+	 */
 	private int freeInodesCount;
-	//4 bytes
+	/**
+	 * 4 bytes
+	 */
 	private int firstDataBlock;
-	//4 bytes
+	/**
+	 * 4 bytes
+	 */
 	private int logBlockSize;
-	//4 bytes
+	/**
+	 * 4 bytes
+	 */
 	private int logFragSize;
-	//4 bytes
+	/**
+	 * 4 bytes
+	 */
 	private int blocksPerGroup;
-	//4 bytes
+	/**
+	 * 4 bytes
+	 */
 	private int fragsPerGroup;
-	//4 bytes
+	/**
+	 * 4 bytes
+	 */
 	private int inodesPerGroup;
-	//8 bytes
+	/**
+	 * 8 bytes
+	 */
 	private long wTime;
-	//4 bytes
+	/**
+	 * 4 bytes
+	 */
 	private int firstInode;
-	//4 bytes
+	/**
+	 * 4 bytes
+	 */
 	private int inodeSize;
-	//4 bytes
+	/**
+	 * 4 bytes
+	 */
 	private int blockGroupNum;
 	
-	//blockSize Property
+	/**
+	 * blockSize Property
+	 * @return
+	 */
 	public int getBlockSize(){
 		return this.blockSize;
 	}
@@ -44,7 +79,10 @@ public class Superblock {
 		this.blockSize = val;
 	}
 	
-	//inodeCount Property
+	/**
+	 * inodeCount Property
+	 * @return
+	 */
 	public int getInodeCount(){
 		return this.inodeCount;
 	}
@@ -52,7 +90,10 @@ public class Superblock {
 		this.inodeCount = val;
 	}
 	
-	//blocksCount Property
+	/**
+	 * blocksCount Property
+	 * @return
+	 */
 	public int getBlocksCount(){
 		return this.blocksCount;
 	}
@@ -60,7 +101,10 @@ public class Superblock {
 		this.blocksCount = val;
 	}
 	
-	//rBlocksCount Property
+	/**
+	 * rBlocksCount Property
+	 * @return
+	 */
 	public int getRBlocksCount(){
 		return this.rBlocksCount;
 	}
@@ -68,7 +112,10 @@ public class Superblock {
 		this.rBlocksCount = val;
 	}
 	
-	//freeBlocksCount Property
+	/**
+	 * freeBlocksCount Property
+	 * @return
+	 */
 	public int getFreeBlocksCount(){
 		return this.freeBlocksCount;
 	}
@@ -76,7 +123,10 @@ public class Superblock {
 		this.freeBlocksCount = val;
 	}
 	
-	//freeInodesCount Property
+	/**
+	 * freeInodesCount Property
+	 * @return
+	 */
 	public int getFreeInodesCount(){
 		return this.freeInodesCount;
 	}
@@ -84,7 +134,10 @@ public class Superblock {
 		this.freeInodesCount = val;
 	}
 	
-	//firstDataBlock Property
+	/**
+	 * firstDataBlock Property
+	 * @return
+	 */
 	public int getFirstDataBlock(){
 		return this.firstDataBlock;
 	}
@@ -92,7 +145,10 @@ public class Superblock {
 		this.firstDataBlock = var;
 	}
 	
-	//logBlockSize Property
+	/**
+	 * logBlockSize Property
+	 * @return
+	 */
 	public int getLogBlockSize(){
 		return this.logBlockSize;
 	}
@@ -100,7 +156,10 @@ public class Superblock {
 		this.logBlockSize = val;
 	}
 	
-	//logFragSize Property
+	/**
+	 * logFragSize Property
+	 * @return
+	 */
 	public int getLogFragSize(){
 		return this.logFragSize;
 	}
@@ -108,7 +167,10 @@ public class Superblock {
 		this.logFragSize = val;
 	}
 	
-	//blocksPerGroup Property
+	/**
+	 * blocksPerGroup Property
+	 * @return
+	 */
 	public int getBlocksPerGroup(){
 		return this.blocksPerGroup;
 	}
@@ -116,7 +178,10 @@ public class Superblock {
 		this.blocksPerGroup = val;
 	}
 	
-	//fragsPerGroup Property
+	/**
+	 * fragsPerGroup Property
+	 * @return
+	 */
 	public int getFragsPerGroup(){
 		return this.fragsPerGroup;
 	}
@@ -124,7 +189,10 @@ public class Superblock {
 		this.fragsPerGroup = val;
 	}
 	
-	//inodesPerGroup Property
+	/**
+	 * inodesPerGroup Property
+	 * @return
+	 */
 	public int getInodesPerGroup(){
 		return this.inodesPerGroup;
 	}
@@ -132,7 +200,10 @@ public class Superblock {
 		this.inodesPerGroup = val;
 	}
 	
-	//wTime Property
+	/**
+	 * wTime Property
+	 * @return
+	 */
 	public long getWTime(){
 		return this.wTime;
 	}
@@ -140,7 +211,10 @@ public class Superblock {
 		this.wTime = val;
 	}
 	
-	//firstInode Property
+	/**
+	 * firstInode Property
+	 * @return
+	 */
 	public int getFirstInode(){
 		return this.firstInode;
 	}
@@ -148,7 +222,10 @@ public class Superblock {
 		this.firstInode = val;
 	}
 	
-	//inodeSize Property
+	/**
+	 * inodeSize Property
+	 * @return
+	 */
 	public int getInodeSize(){
 		return this.inodeSize;
 	}
@@ -156,7 +233,10 @@ public class Superblock {
 		this.inodeSize = val;
 	}
 	
-	//blockGroupNum Property
+	/**
+	 * blockGroupNum Property
+	 * @return
+	 */
 	public int getBlockGroupNum(){
 		return this.blockGroupNum;
 	}
@@ -164,7 +244,9 @@ public class Superblock {
 		this.blockGroupNum = val;
 	}
 	
-	//Prints all the superblock values
+	/**
+	 * Prints all the superblock values
+	 */
 	public void print(){
 		System.out.println("Size of each block:\t\t" + this.blockSize);
 		System.out.println("Total Number of Inodes:\t\t" + this.inodeCount);

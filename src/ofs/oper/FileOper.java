@@ -6,7 +6,11 @@ import java.util.Date;
 
 import ofs.ds.*;
 import ofs.utils.*;
-
+/**
+ * Handles basic file operations. Superclass to DirectoryOper and RegFileOper.
+ * @author shreyasvalmiki
+ *
+ */
 public class FileOper {
 
 	protected Superblock sBlock = new Superblock();
@@ -22,6 +26,13 @@ public class FileOper {
 		this.raFile = raFile;
 		dirEntryList.clear();
 	}
+	
+	/**
+	 * Updates Inode, block bitmap and inode bitmap for the new file (of all types, including directories)
+	 * @param fileMode
+	 * @param fileSize
+	 * @return
+	 */
 	protected int updateNewFileDetails(int fileMode, int fileSize){
 		int inodePos;
 		int blockPos;
@@ -31,8 +42,6 @@ public class FileOper {
 		sBlock = FSUtils.getSuperblock(raFile);
 
 		blockCount = fileSize;
-		//blockCount += blockCount%sBlock.getBlockSize()==0?0:1;
-
 
 		if(sBlock.getFreeBlocksCount() < blockCount || sBlock.getFreeInodesCount() < 1){
 			return Constants.ERR_INSUFF_MEM;
@@ -42,10 +51,7 @@ public class FileOper {
 		}
 		blockBitmap = FSUtils.getBitmap(raFile, sBlock.getBlocksCount(), true);
 		inodeBitmap = FSUtils.getBitmap(raFile, sBlock.getInodeCount(), false);
-
-		//		blockBitmap.print();
-		//		System.out.println();
-		//		inodeBitmap.print();
+		
 		inodePos = inodeBitmap.setFirstEmptyBit();
 
 		curInodeLoc = (inodePos-1) * Constants.INODE_SIZE + sBlock.getFirstInode();
@@ -75,7 +81,16 @@ public class FileOper {
 
 		return Constants.NO_ERROR;
 	}
-
+	
+	/**
+	 * Adds the directory entry of the file
+	 * @param parInode
+	 * @param fileName
+	 * @param fileType
+	 * @param fileMode
+	 * @param size
+	 * @return
+	 */
 	protected int addFile(Inode parInode, String fileName, int fileType, int fileMode, int size){
 		int err = Constants.NO_ERROR;
 		this.parInode = parInode;
@@ -85,7 +100,6 @@ public class FileOper {
 		int recordLength;
 		long posDiff;
 		long tailDiff;
-		//Bitmap blockBitmap;
 		DirectoryEntry prevDirEntry = new DirectoryEntry();
 		DirectoryEntry dirEntry = new DirectoryEntry();
 		DirectoryEntry tailEntry = new DirectoryEntry();
@@ -99,13 +113,11 @@ public class FileOper {
 		{
 			return err;
 		}
-		//blockBitmap = FSUtils.getBitmap(raFile, sBlock.getBlocksCount(), true);
 
-		recordLength = (Constants.DIR_ENTRY_SIZE_SANS_NAME + fileName.length()*Constants.CHAR_SIZE_IN_BYTES);
+		recordLength = (Constants.DIR_ENTRY_SIZE_SANS_NAME + fileName.length()*Constants.SIZE_OF_CHAR);
 		recordLength = recordLength % 4 == 0 ? recordLength : recordLength + (4 - recordLength%4);
 
-		prevPos = FSUtils.getLastDirEntry(raFile, parInode.getBlock(0));
-		//parInodeLoc =(int) prevPos;
+		prevPos = FSUtils.getTailDirEntry(raFile, parInode.getBlock(0));
 		prevDirEntry = FSUtils.getDirEntry(raFile, prevPos);
 		posDiff = prevPos+prevDirEntry.getRecordLength() - parInode.getBlock(0);
 		pos = prevPos+prevDirEntry.getRecordLength();
@@ -126,7 +138,6 @@ public class FileOper {
 				return Constants.ERR_INSUFF_MEM;
 			}
 			else{
-				//blockBitmap.unsetAtPos((int)(pos/sBlock.getBlockSize() - sBlock.getFirstDataBlock()));
 				tailPos = (sBlock.getFirstDataBlock() + pos) * sBlock.getBlockSize(); 
 			}
 		}
@@ -162,6 +173,13 @@ public class FileOper {
 		return err;
 	}
 
+	/**
+	 * Removes file (also directory) from the filesystem.
+	 * Removes all elements from a directory recursively
+	 * @param parInodePos
+	 * @param fileName
+	 * @return
+	 */
 	protected int deleteFile(long parInodePos, String fileName){
 		Inode parInode = FSUtils.getInode(raFile, parInodePos);
 		ArrayList<DirectoryEntry>dirEntryList = new ArrayList<>();
@@ -183,7 +201,12 @@ public class FileOper {
 		
 		return Constants.NO_ERROR;
 	}
-
+	/**
+	 * To delete a file, the adjacent directory entries are modified to severe the link.
+	 * Disadvantage: the memory is lost forever -- there is no defragmentation routines, yet.
+	 * @param inodePos
+	 * @param fileName
+	 */
 	protected void updateNeighboringEntries(long inodePos, String fileName){
 		Inode inode = FSUtils.getInode(raFile, inodePos);
 		ArrayList<DirectoryEntry>entryList = new ArrayList<>();
@@ -201,7 +224,12 @@ public class FileOper {
 		}
 	}
 
-
+	/**
+	 * Gets the inode position with the name of the file.
+	 * @param name
+	 * @param dirList
+	 * @return
+	 */
 	public int getInodeWithName(String name, ArrayList<DirectoryEntry> dirList){
 		for(DirectoryEntry entry: dirList){
 			if(entry.getName().equals(name) && entry.getFileType() == Constants.FT_DIR){

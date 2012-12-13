@@ -6,6 +6,10 @@ import java.util.ArrayList;
 
 import ofs.ds.*;
 
+/**
+ * @author shreyasvalmiki
+ * Has the utilities necessary for getting from, or updating the filesystem random access file
+ */
 public class FSUtils {
 	public static void updateSuperblock(RandomAccessFile raFile,Superblock sBlock){
 		try{
@@ -24,7 +28,12 @@ public class FSUtils {
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * Writes the bitmap to the filesystem
+	 * @param raFile
+	 * @param bitmap
+	 * @param pos
+	 */
 	public static void updateBitmap(RandomAccessFile raFile,Bitmap bitmap, long pos){	
 		int words = bitmap.getWords();
 		int[] map = bitmap.getMap();
@@ -38,7 +47,12 @@ public class FSUtils {
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * Writes inode to the filesystem
+	 * @param raFile
+	 * @param inode
+	 * @param pos
+	 */
 	public static void updateInode(RandomAccessFile raFile, Inode inode, long pos){
 		try{
 			raFile.seek(pos);
@@ -59,7 +73,15 @@ public class FSUtils {
 			e.printStackTrace();
 		}
 	}
-
+	
+	/**
+	 * Writes the the initial directory entries for any new directory to the filesystem 
+	 * @param raFile
+	 * @param curInodeIdx
+	 * @param parInodeIdx
+	 * @param isRoot
+	 * @param pos
+	 */
 	public static void updateInitDirEntry(RandomAccessFile raFile,int curInodeIdx, int parInodeIdx,boolean isRoot, long pos){
 		try{
 			Superblock sBlock = new Superblock();
@@ -96,7 +118,12 @@ public class FSUtils {
 			e.printStackTrace();
 		}
 	}
-
+	
+	/**
+	 * Gets the superblock from the filesystem
+	 * @param raFile
+	 * @return
+	 */
 	public static Superblock getSuperblock(RandomAccessFile raFile){
 		Superblock sBlock = new Superblock();
 		try {
@@ -117,6 +144,12 @@ public class FSUtils {
 		return sBlock;
 	}
 	
+	/**
+	 * Gets an inode from the filesystem
+	 * @param raFile
+	 * @param pos
+	 * @return
+	 */
 	public static Inode getInode(RandomAccessFile raFile, long pos){
 		Inode inode = new Inode();
 		try{
@@ -140,6 +173,13 @@ public class FSUtils {
 		return inode;
 	}
 	
+	/**
+	 * Gets a bitmap from the filesystem
+	 * @param raFile
+	 * @param size
+	 * @param isBlockBitmap
+	 * @return
+	 */
 	public static Bitmap getBitmap(RandomAccessFile raFile,int size, boolean isBlockBitmap){
 		Bitmap bitmap = new Bitmap(size);
 		Superblock sBlock = getSuperblock(raFile);
@@ -159,6 +199,13 @@ public class FSUtils {
 		}
 		return bitmap;
 	}
+	
+	/**
+	 * Gets a directory entry from the filesystem
+	 * @param raFile
+	 * @param pos
+	 * @return
+	 */
 	public static DirectoryEntry getDirEntry(RandomAccessFile raFile, long pos){
 		DirectoryEntry dirEntry = new DirectoryEntry();
 		String name = "";
@@ -181,7 +228,13 @@ public class FSUtils {
 		return dirEntry;
 	}
 	
-	public static long getLastDirEntry(RandomAccessFile raFile,long pos){
+	/**
+	 * Gets the trailing directory entry for a directory
+	 * @param raFile
+	 * @param pos
+	 * @return
+	 */
+	public static long getTailDirEntry(RandomAccessFile raFile,long pos){
 		DirectoryEntry entry = new DirectoryEntry();
 		DirectoryEntry nextEntry = new DirectoryEntry();
 		while(true){
@@ -194,6 +247,13 @@ public class FSUtils {
 		}
 	}
 	
+	/**
+	 * Gets the previous directory entry along with the current directory entry
+	 * @param raFile
+	 * @param fileName
+	 * @param pos
+	 * @return
+	 */
 	public static ArrayList<DirectoryEntry> getThisAndPrevEntry(RandomAccessFile raFile, String fileName,long pos){
 		ArrayList<DirectoryEntry> dirEntryList = new ArrayList<>();
 		DirectoryEntry prevEntry = new DirectoryEntry();
@@ -218,6 +278,13 @@ public class FSUtils {
 		return dirEntryList;
 	}
 	
+	/**
+	 * Checks if the filename exists in the particular directory
+	 * @param raFile
+	 * @param fileName
+	 * @param pos
+	 * @return
+	 */
 	public static boolean isFileNameExists(RandomAccessFile raFile, String fileName, long pos){
 		DirectoryEntry entry = new DirectoryEntry();
 		int inode = -1;
@@ -232,6 +299,12 @@ public class FSUtils {
 		return false;
 	}
 	
+	/**
+	 * Writes a directory entry in the filesystem
+	 * @param raFile
+	 * @param dirEntry
+	 * @param pos
+	 */
 	public static void updateDirEntry(RandomAccessFile raFile,DirectoryEntry dirEntry, long pos){
 		try{
 			raFile.seek(pos);
@@ -249,6 +322,13 @@ public class FSUtils {
 		}
 	}
 	
+	/**
+	 * Returns all the directory entries for navigation. Returns current and parent
+	 * directory entries
+	 * @param raFile
+	 * @param pos
+	 * @return
+	 */
 	public static ArrayList<DirectoryEntry> getNavigateList(RandomAccessFile raFile, long pos){
 		ArrayList<DirectoryEntry> entryList = new ArrayList<DirectoryEntry>();
 		DirectoryEntry entry = new DirectoryEntry();
@@ -262,6 +342,12 @@ public class FSUtils {
 		return entryList;
 	}
 	
+	/**
+	 * Returns only named directory entries in a directory entry
+	 * @param raFile
+	 * @param pos
+	 * @return
+	 */
 	public static ArrayList<DirectoryEntry> getDirEntryList(RandomAccessFile raFile, long pos){
 		ArrayList<DirectoryEntry> entryList = new ArrayList<DirectoryEntry>();
 		DirectoryEntry entry = new DirectoryEntry();
@@ -277,6 +363,13 @@ public class FSUtils {
 		return entryList;
 	}
 	
+	/**
+	 * Gets the directory entry position based on the parent inode position
+	 * @param raFile
+	 * @param fileName
+	 * @param pos
+	 * @return
+	 */
 	public static long getDirEntryPos(RandomAccessFile raFile,String fileName, long pos){
 		ArrayList<DirectoryEntry> entryList = new ArrayList<DirectoryEntry>();
 		entryList = getNavigateList(raFile, pos);
@@ -289,13 +382,23 @@ public class FSUtils {
 		return 0;
 	}
 	
+	/**
+	 * Gets the root inode
+	 * @param raFile
+	 * @return
+	 */
 	public static Inode getRootInode(RandomAccessFile raFile){
 		Superblock sBlock = getSuperblock(raFile);
 		Inode inode = getInode(raFile, sBlock.getFirstInode());
 		return inode;
 	}
 	
-	
+	/**
+	 * Deletes all the components of a file from the filesystem
+	 * Unsets the inode bitmap and the block bitmap
+	 * @param raFile
+	 * @param pos
+	 */
 	public static void deleteComponents(RandomAccessFile raFile, long pos){
 		Inode inode = getInode(raFile, pos);
 		Superblock sBlock = getSuperblock(raFile);

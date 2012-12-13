@@ -4,7 +4,18 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Does a few datatype conversions
+ * @author shreyasvalmiki
+ *
+ */
 public class GeneralUtils {
+	
+	/**
+	 * Returns the "long" form of a date to store into the filesystem
+	 * @param date
+	 * @return
+	 */
 	public static long getLongFromDate(Date date){
 		SimpleDateFormat format = new SimpleDateFormat("yyMMddhhmmss");
 		String strDate = new String();
@@ -12,6 +23,11 @@ public class GeneralUtils {
 		return Long.parseLong(strDate);
 	}
 	
+	/**
+	 * Returns a "Date" from the long form of the date
+	 * @param date
+	 * @return
+	 */
 	public static Date getDateFromLong(long date){
 		SimpleDateFormat format = new SimpleDateFormat("yyMMddhhmmss");
 		
@@ -22,6 +38,5 @@ public class GeneralUtils {
 			e.printStackTrace();
 			return null;
 		}
-		
 	}
 }

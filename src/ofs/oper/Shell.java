@@ -6,7 +6,12 @@ import java.util.*;
 import ofs.ds.*;
 import ofs.fs.*;
 import ofs.utils.*;
-
+/**
+ * Shell for basic file operations
+ * Though it's not so user friendly, it does the job
+ * @author shreyasvalmiki
+ *
+ */
 public class Shell {
 
 	public RandomAccessFile raFile;
@@ -30,21 +35,13 @@ public class Shell {
 
 		boolean isFileSysSet = false;
 
-
 		boolean isExit = false;
-		//String fileName = new String();
+		
 		do{
 
 			while(!isFileSysSet){
 				System.out.println("Enter the file system file you want to use (example: file.dat):");
 				sh.fileName = in.next();
-				//				if (!sh.fileName.substring(sh.fileName.length()-4).equals(".dat"))
-				//				{
-				//					System.out.println("Invalid file extension");
-				//					isFileSysSet = false;
-				//				}
-				//				else
-				//				{
 				if(!fs.isCreated(sh.fileName))
 				{
 					System.out.println(sh.fileName + " is not avalable. Do you want to create? [Y/N]");
@@ -119,7 +116,9 @@ public class Shell {
 		}while(!isExit);
 		in.close();
 	}
-
+	/**
+	 * Constructor
+	 */
 	public Shell(){
 		errMap.put(Constants.ERR_INSUFF_MEM, "Error! Insufficient memory.");
 		errMap.put(Constants.ERR_FILE_TOO_LARGE, "Error! File too large.");
@@ -132,6 +131,9 @@ public class Shell {
 		ftMap.put(Constants.FT_REG_FILE, "File");
 		ftMap.put(Constants.FT_UNKNOWN, "Unknown");
 	}
+	/**
+	 * Creates a directory
+	 */
 	private void createDir(){
 		String name = "New Dir";
 		boolean done = false;
@@ -151,7 +153,10 @@ public class Shell {
 			}
 		}
 	}
-
+	
+	/**
+	 * Creates a regular file
+	 */
 	private void createRegFile(){
 		String name = "New Dir";
 		String size;
@@ -188,7 +193,10 @@ public class Shell {
 			}
 		}
 	}
-
+	
+	/**
+	 * Lists all the files and directories present in the current directory
+	 */
 	private void list(){
 		ArrayList<DirectoryEntry> dirArr = new ArrayList<DirectoryEntry>();
 		dirArr = FSUtils.getDirEntryList(raFile, currInode.getBlock(0));
@@ -198,7 +206,10 @@ public class Shell {
 			System.out.println(entry.getName() + "\t" + GeneralUtils.getDateFromLong(inode.getCreatedTime())+ "\t" + this.ftMap.get((int)entry.getFileType()));
 		}
 	}
-
+	
+	/**
+	 * Navigates to a desired directory
+	 */
 	private void navigate(){
 		String path = ".";
 		DirectoryOper dir = new DirectoryOper(raFile);
@@ -218,6 +229,9 @@ public class Shell {
 		System.out.println("You are currently in "+path);
 	}
 	
+	/**
+	 * Deletes a directory or a regular file
+	 */
 	private void delete(){
 		System.out.println("Enter the name of the file or directory to delete: ");
 		String fileName = in.next();
@@ -231,10 +245,17 @@ public class Shell {
 		}
 	}
 	
+	/**
+	 * Displays the error message based on the error number
+	 * @param err
+	 */
 	private void displayError(int err){
 		System.out.println(errMap.get(err));
 	}
 	
+	/**
+	 * Sets the current directory
+	 */
 	private void setCurrDirEntry(){
 		currEntry = FSUtils.getDirEntry(raFile, currInode.getBlock(0));
 		currInodeLoc = currEntry.getInode();

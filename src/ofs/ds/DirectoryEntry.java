@@ -1,23 +1,42 @@
 package ofs.ds;
-
+/**
+ * Gets an sets elements in the directory entry
+ * @author shreyasvalmiki
+ *
+ */
 public class DirectoryEntry {
-	//4 bytes
+	/**
+	 * 4 bytes
+	 */
 	private int inode;
-	//4 bytes
+	/**
+	 * 4 bytes
+	 */
 	private int recordLength;
-	//1 byte
+	/**
+	 * 1 byte
+	 */
 	private byte nameLength;
-	//1 byte
+	/**
+	 * 1 byte
+	 */
 	private byte fileType;
-	//Variable size
+	/**
+	 * 2 * Size of name
+	 */
 	private String name;
 	
-	//Constructor
+	/**
+	 * Constructor
+	 */
 	public DirectoryEntry(){
 		name = new String();
 	}
 	
-	//inode Property
+	/**
+	 * inode Property
+	 * @return
+	 */
 	public int getInode(){
 		return this.inode;
 	}
@@ -25,7 +44,10 @@ public class DirectoryEntry {
 		this.inode = val;
 	}
 	
-	//recordLength Property
+	/**
+	 * recordLength Property
+	 * @return
+	 */
 	public int getRecordLength(){
 		return this.recordLength;
 	}
@@ -33,7 +55,10 @@ public class DirectoryEntry {
 		this.recordLength = val;
 	}
 	
-	//nameLength Property
+	/**
+	 * nameLength Property
+	 * @return
+	 */
 	public byte getNameLength(){
 		return this.nameLength;
 	}
@@ -41,7 +66,10 @@ public class DirectoryEntry {
 		this.nameLength = val;
 	}
 	
-	//fileType Property
+	/**
+	 * fileType Property
+	 * @return
+	 */
 	public byte getFileType(){
 		return this.fileType;
 	}
@@ -49,7 +77,10 @@ public class DirectoryEntry {
 		this.fileType = val;
 	}
 	
-	//name Property
+	/**
+	 * name Property
+	 * @return
+	 */
 	public String getName(){
 		return this.name;
 	}
@@ -57,7 +88,9 @@ public class DirectoryEntry {
 		this.name = val;
 	}
 	
-	//Prints the directory entry
+	/**
+	 * Prints the directory entry
+	 */
 	public void print(){
 		System.out.println("Inode:\t\t" + inode);
 		System.out.println("Record Length:\t\t" + recordLength);

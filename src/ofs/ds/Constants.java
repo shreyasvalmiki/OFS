@@ -1,8 +1,8 @@
 package ofs.ds;
 
 public class Constants {
-	//public static final int SUPERBLOCK_SIZE = 68;
-	public static final int CHAR_SIZE_IN_BYTES = 2;
+
+	
 	public static final int BLOCK_BITMAP_BLK_POS = 2;
 	public static final int INODE_BITMAP_BLK_POS = 3;
 	public static final int BYTE_SIZE = 8;
@@ -14,19 +14,20 @@ public class Constants {
 	public static final int HEX_WORD_SIZE = 0x1F;
 	public static final int HEX_EMPTY_WORD = 0x80000000;
 	
+	//Size of datatypes
 	public static final int SIZE_OF_INT = 4;
 	public static final int SIZE_OF_LONG = 8;
 	public static final int SIZE_OF_BYTE = 1;
+	public static final int SIZE_OF_CHAR = 2;
 	
-	//Inode
+	//Inode links' count
 	public static final int DIRECT_LINKS_CNT = 15; 
+	public static final int BLOCKS_PER_INODE = 15;
 	
 	//Inode mode constants
 	public static final int DIR = 1;
 	public static final int REG_FILE = 2;
 	public static final int SYM_LINK = 3;
-	
-	public static final int BLOCKS_PER_INODE = 15;
 	
 	
 	//Directory entry constants

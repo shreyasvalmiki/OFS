@@ -10,6 +10,13 @@ public class DirectoryOper extends FileOper{
 		super(file);
 	}
 	
+	/**
+	 * Creates the directory
+	 * @param parInode
+	 * @param parInodeLoc
+	 * @param fileName
+	 * @return
+	 */
 	public int create(Inode parInode, int parInodeLoc, String fileName){
 		this.parInodeLoc = parInodeLoc;
 		int err = Constants.NO_ERROR;
@@ -23,7 +30,12 @@ public class DirectoryOper extends FileOper{
 		
 		return err;
 	}
-	
+	/**
+	 * Navigates to a particular directory based on the path sent
+	 * @param path
+	 * @param parInode
+	 * @return
+	 */
 	public Inode navigateTo(String path, Inode parInode){
 		Inode inode = new Inode();
 		ArrayList<DirectoryEntry> dirList = new ArrayList<DirectoryEntry>();
@@ -44,7 +56,6 @@ public class DirectoryOper extends FileOper{
 					return null;
 				}				
 				inode = FSUtils.getInode(raFile, inodeNum);
-				//dirList = FSUtils.getNavigateList(raFile, inode.getBlock(0));
 			}
 		}
 		

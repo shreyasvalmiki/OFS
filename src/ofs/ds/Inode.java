@@ -1,33 +1,62 @@
 package ofs.ds;
-
+/**
+ * Total size 109 bytes
+ * @author shreyasvalmiki
+ *
+ */
 public class Inode {
-	//4 bytes
+	/**
+	 * 4 bytes
+	 */
 	private int mode;
-	//4 bytes
+	/**
+	 * 4 bytes
+	 */
 	private int size;
-	//8 bytes
+	/**
+	 * 8 bytes
+	 */
 	private long accessedTime;
-	//8 bytes
+	/**
+	 * 8 bytes
+	 */
 	private long createdTime;
-	//8 bytes
+	/**
+	 * 8 bytes
+	 */
 	private long modifiedTime;
-	//8 bytes
+	/**
+	 * 8 bytes
+	 */
 	private long deletedTime;
-	//1 byte
+	/**
+	 * 1 byte
+	 */
 	private byte linksCount;
-	//4 bytes
+	/**
+	 * 4 bytes
+	 */
 	private int blocksCount;
-	//4 bytes
+	/**
+	 * 4 bytes
+	 */
 	private int implFlag;
-	//60 bytes
+	/**
+	 * 60 bytes
+	 */
 	private int[] block;
 	
-	//Constructor
+	/**
+	 * Constructor
+	 */
 	public Inode(){
 		block = new int[15];
 	}
 	
-	//mode Property
+	/**
+	 * mode Property
+	 * @return
+	 */
 	public int getMode(){
 		return this.mode;
 	}
@@ -35,7 +64,10 @@ public class Inode {
 		this.mode = val;
 	}
 	
-	//size Property
+	/**
+	 * size Property
+	 * @return
+	 */
 	public int getSize(){
 		return this.size;
 	}
@@ -43,7 +75,10 @@ public class Inode {
 		this.size = val;
 	}
 	
-	//accessedTime Property
+	/**
+	 * accessedTime Property
+	 * @return
+	 */
 	public long getAccessedTime(){
 		return this.accessedTime;
 	}
@@ -51,7 +86,10 @@ public class Inode {
 		this.accessedTime = val;
 	}
 	
-	//createdTime Property
+	/**
+	 * createdTime Property
+	 * @return
+	 */
 	public long getCreatedTime(){
 		return this.createdTime;
 	}
@@ -59,7 +97,10 @@ public class Inode {
 		this.createdTime = val;
 	}
 	
-	//modifiedTime Property
+	/**
+	 * modifiedTime Property
+	 * @return
+	 */
 	public long getModifiedTime(){
 		return this.modifiedTime;
 	}
@@ -67,7 +108,10 @@ public class Inode {
 		this.modifiedTime = val;
 	}
 	
-	//deletedTime Property
+	/**
+	 * deletedTime Property
+	 * @return
+	 */
 	public long getDeletedTime(){
 		return this.deletedTime;
 	}
@@ -75,7 +119,10 @@ public class Inode {
 		this.deletedTime = val;
 	}
 	
-	//linksCount Property
+	/**
+	 * linksCount Property
+	 * @return
+	 */
 	public byte getLinksCount(){
 		return this.linksCount;
 	}
@@ -83,7 +130,10 @@ public class Inode {
 		this.linksCount = val;
 	}
 	
-	//blocksCount Property
+	/**
+	 * blocksCount Property
+	 * @return
+	 */
 	public int getBlocksCount(){
 		return this.blocksCount;
 	}
@@ -91,7 +141,10 @@ public class Inode {
 		this.blocksCount = val;
 	}
 	
-	//implFlag Property
+	/**
+	 * implFlag Property
+	 * @return
+	 */
 	public int getImplFlag(){
 		return this.implFlag;
 	}
@@ -99,17 +152,27 @@ public class Inode {
 		this.implFlag = val;
 	}
 	
-	//gets a block from block array
+	/**
+	 * gets a block from block array
+	 * @param index
+	 * @return
+	 */
 	public int getBlock(int index){
 		return this.block[index];
 	}
-	//sets a block to the block array at the index
+	/**
+	 * sets a block to the block array at the index
+	 * @param index
+	 * @param val
+	 */
 	public void setBlock(int index,int val){
 		this.block[index] = val;
 	}
 	
 	
-	//Prints an Inode
+	/**
+	 * Prints an Inode
+	 */
 	public void print(){
 		System.out.println("Mode:\t\t" + mode);
 		System.out.println("Size:\t\t" + size);

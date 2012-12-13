@@ -4,7 +4,12 @@ import java.io.*;
 import java.util.*;
 import ofs.ds.*;
 import ofs.utils.*;
-
+/**
+ * Class to create or get an existing filesystem
+ * 
+ * @author shreyasvalmiki
+ *
+ */
 public class FileSystem {
 	
 	private static String sep;
@@ -23,6 +28,11 @@ public class FileSystem {
 	public FileSystem(){
 		sep = File.separator;
 	}
+	
+	/**
+	 * Main class to for create a filesystem --Not functional
+	 * @param args
+	 */
 	public static void main(String[] args){
 		boolean fileNameOk = false;
 		FileSystem fs = new FileSystem();
@@ -64,7 +74,13 @@ public class FileSystem {
 		}while(!fileNameOk);
 		in.close();
 	}
-	
+	/**
+	 * Creates the filesystem
+	 * @param fsName
+	 * @param fSize
+	 * @param blkSize
+	 * @return
+	 */
 	public RandomAccessFile create(String fsName, int fSize, int blkSize){
 		fileName = fsName;
 		fileSize = fSize;
@@ -77,18 +93,17 @@ public class FileSystem {
 			setFileSystemObjects();
 			updateFileSystem();
 			displaySuperBlock();
-//			blockBitmap = FSUtils.getBitmap(raFile, sBlock.getBlocksCount(), true);
-//			//blockBitmap.print();
-//			System.out.println();
-//			inodeBitmap = FSUtils.getBitmap(raFile, sBlock.getInodeCount(), false);
-			//inodeBitmap.print();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 		return raFile;
 	}
-	
+	/**
+	 * Calculates the total block count and the number of inodes 
+	 * required for the particular filesystem depending on the size
+	 * of the random access file and the block size 
+	 */
 	private void setNumbers(){
 		int totalBlockCount = (int)(fileSize/blockSize) - 3;
 		int tempInodeCount = totalBlockCount;
@@ -122,7 +137,11 @@ public class FileSystem {
 		inodeCount = tempInodeCount;
 	}
 	
-	
+	/**
+	 * Returns the filesystem (the random access file) already created
+	 * @param fsName
+	 * @return
+	 */
 	public RandomAccessFile get(String fsName){
 		fileName = fsName;
 		File file = new File("src"+sep+"Assets"+sep+fileName);
@@ -135,19 +154,29 @@ public class FileSystem {
 		} 
 		return raFile;
 	}
+	/**
+	 * Checks if the filesystem is already created
+	 * @param fsName
+	 * @return
+	 */
 	public boolean isCreated(String fsName){
 		fileName = fsName;
 		File file = new File("src"+sep+"Assets"+sep+fileName);
 		return file.exists();
 	}
 
+	/**
+	 * Sets the superblock, block bitmap, the inode bitmap and the initial inode objecs
+	 */
 	public void setFileSystemObjects(){
 		setInitSuperblock();
 		blockBitmap = new Bitmap(blockCount);
 		inodeBitmap = new Bitmap(inodeCount);
 		setInitRootInode();
 	}
-	
+	/**
+	 * Applies the changes made to the objects to the filesystem
+	 */
 	public void updateFileSystem(){
 		try{
 			FSUtils.updateSuperblock(raFile, sBlock);
@@ -163,6 +192,10 @@ public class FileSystem {
 		}
 		
 	}
+	
+	/**
+	 * Initializes the superblock object
+	 */
 	private void setInitSuperblock() {
 		
 		Date now = new Date();
@@ -177,6 +210,9 @@ public class FileSystem {
 		sBlock.setFirstDataBlock(firstDataBlock);
 		sBlock.setFirstInode(blockSize*3);
 	}
+	/**
+	 * Sets the root inode object
+	 */
 	private void setInitRootInode(){
 		Date now = new Date();
 		initInode = new Inode();
@@ -193,7 +229,9 @@ public class FileSystem {
 			initInode.setBlock(i, 0);
 		}
 	}
-	
+	/**
+	 * Displays the superblock object extracted from the filesystem
+	 */
 	public void displaySuperBlock(){
 		Superblock sb = new Superblock();
 		sb = FSUtils.getSuperblock(raFile);

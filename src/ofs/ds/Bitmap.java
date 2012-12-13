@@ -1,8 +1,13 @@
 package ofs.ds;
-/*
+/**
  * Modified to requirement from www.java2s.com
  * 9.33.1.Implementation of a bit map of any size, together with static methods to manipulate int, byte and byte[] values as bit maps
- **/
+ * 
+ * 
+ * Sets, unsets, gets a bit. Uses integers (32 bit) to set or unset a bit.
+ * @author shreyasvalmiki
+ *
+ */
 public class Bitmap {
 	private int words;
 	private int size;
@@ -16,12 +21,17 @@ public class Bitmap {
 		}
 		map = new int[words];
 	}
-	
-	//gets the number of words
+	/**
+	 * Gets the number of words
+	 * @return
+	 */
 	public int getWords(){
 		return words;
 	}
-	//sets a bit map position
+	/**
+	 * Sets a bit map position
+	 * @param position
+	 */
 	public void setAtPos(int position){
 		int wordIndex;
 		int mask;
@@ -33,7 +43,10 @@ public class Bitmap {
 		//System.out.println(Integer.toBinaryString(word | mask));
 	}
 	
-	//unsets at bit map position
+	/**
+	 * Unsets at bit map position
+	 * @param position
+	 */
 	public void unsetAtPos(int position){
 		int wordIndex;
 		int mask;
@@ -45,30 +58,40 @@ public class Bitmap {
 		map[wordIndex] = word & mask;
 	}
 	
-	//checks if bit is set at the position
+	/**
+	 * Checks if bit is set at the position
+	 * @param position
+	 * @return
+	 */
 	public boolean isSetAtPos(int position){
 		int wordIndex;
 		int mask;
 		int word;
 		wordIndex = position >> Constants.WORD_SHIFT;
-		
 		mask = Constants.HEX_EMPTY_WORD >>> (position & Constants.HEX_WORD_SIZE);
-		//System.out.println();
-		//System.out.println(Integer.toBinaryString(mask));
 		word = map[wordIndex];
-		//System.out.println(Integer.toBinaryString(word));
-		//System.out.println((mask&word)!=0);
 		return (mask & word) !=0;
 	}
 	
-	//
+	/**
+	 * Sets map at a particular position
+	 * @param wordIndex
+	 * @param val
+	 */
 	public void setMapAtPos(int wordIndex, int val){
 		map[wordIndex] = val;
 	}
+	
+	/**
+	 * Gets the entire map
+	 * @return
+	 */
 	public int[] getMap(){
 		return map;
 	}
-	//Prints the bitmap
+	/**
+	 * Prints the bitmap
+	 */
 	public void print(){
 		for(int i = 0; i<words; ++i)
 		{
@@ -76,7 +99,10 @@ public class Bitmap {
 			
 		}
 	}
-	
+	/**
+	 * Returns first free bit
+	 * @return
+	 */
 	public int getFirstFreeBit(){
 		for(int i = 1;i < size;++i){
 			if(!isSetAtPos(i))
@@ -87,6 +113,10 @@ public class Bitmap {
 		return -1;
 	}
 	
+	/**
+	 * Checks for the first unset bit and sets it
+	 * @return
+	 */
 	public int setFirstEmptyBit(){
 		for(int i = 1;i < size;++i){
 			if(!isSetAtPos(i))
@@ -98,6 +128,11 @@ public class Bitmap {
 		return -1;
 	}
 	
+	/**
+	 * Checks if a number of bits are free
+	 * @param numOfBits
+	 * @return
+	 */
 	public boolean isFree(int numOfBits){
 		int i = 0;
 		
