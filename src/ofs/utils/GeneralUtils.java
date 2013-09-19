@@ -13,6 +13,8 @@ public class GeneralUtils {
 	
 	/**
 	 * Returns the "long" form of a date to store into the filesystem
+	 * 
+	 * Reference: http://stackoverflow.com
 	 * @param date
 	 * @return
 	 */
@@ -25,6 +27,8 @@ public class GeneralUtils {
 	
 	/**
 	 * Returns a "Date" from the long form of the date
+	 * 
+	 * Reference: http://stackoverflow.com
 	 * @param date
 	 * @return
 	 */
